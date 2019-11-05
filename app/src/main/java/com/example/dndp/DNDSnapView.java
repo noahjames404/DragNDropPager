@@ -15,6 +15,8 @@ public class DNDSnapView extends View {
 
     private RelativeLayout layout;
 
+    private DNDButton stored_button;
+
     public DNDSnapView(Context context) {
         super(context);
     }
@@ -48,5 +50,11 @@ public class DNDSnapView extends View {
         return layout;
     }
 
+    public DNDButton getStoredButton() {
+        return stored_button;
+    }
 
+    public void setStoredButton(DNDButton stored_button) {
+        this.stored_button = stored_button;
+    }
 }

@@ -6,16 +6,15 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
-import android.os.Debug;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.Button;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
+
+import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +57,8 @@ public class DNDPager {
     private String group_id;
 
     /**
-     * The margin in width & height of a button, this avoids overlapping buttons in close sections.
+     * The margin in width & height of a button, use for checking the sizes in buttons.
+     * a percentage is ignored when an element overlaps another element.
      */
     private double margin_percentage = 0.05;
 
@@ -67,6 +67,8 @@ public class DNDPager {
      * background color of the layout, since the layout's background color would be override by the grid snap view.
      */
     private int background_color = Color.WHITE;
+
+    private DNDButton button_to_swap;
 
     /**
         @param layout items are populated in this layout.
@@ -78,7 +80,6 @@ public class DNDPager {
         this.col_num = col_num;
         this.group_id = group_id;
     }
-
     /**
      * Changes are applied and start to load the views.
      */
@@ -92,9 +93,15 @@ public class DNDPager {
                 cell_width = getCellSize(col_num,width);
 
                 generateSnapGrid();
-                generateButton(1,1,0,0);
+                generateButton(1,1,0,0).setBackgroundColor(Color.BLACK);
                 generateButton(1,1,1,0);
                 generateButton(1,1,2,0);
+                generateButton(1,1,3,0);
+
+                generateButton(1,1,0,1);
+                generateButton(1,1,1,1);
+                generateButton(1,1,2,1);
+                generateButton(1,1,3,1);
             }
         });
     }
@@ -110,7 +117,7 @@ public class DNDPager {
             for (int x = 0; x < col_num; x++) {
                 DNDSnapView snap_view = new DNDSnapView(context);
                 snap_view.setLayout(layout);
-                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                final RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                         (int)cell_width,
                         (int)cell_height
                 );
@@ -153,7 +160,6 @@ public class DNDPager {
 
                                 break;
                             case DragEvent.ACTION_DRAG_EXITED:
-
                                 drop_shadow_view.setBackgroundColor(background_color);
                                 break;
                             case DragEvent.ACTION_DRAG_LOCATION:
@@ -169,22 +175,68 @@ public class DNDPager {
                                 if(!group_id.equals(btn.getGroupId())){
                                     return false;
                                 }
+                                //check if it overlaps other views (buttons)
                                 if(hasOverlapView(vlp,btn)){
-                                    return false;
+                                    //this section checks if it is able to switch places with another button.
+                                    //check if both buttons has the same ratio stored
+                                    if(hasTheSameRatio(snap_view.getStoredButton(),btn)){
+                                        //check if both buttons are in the same layout
+                                        if(btn.getLastLayout() == layout){
+                                           //switch
+                                            DNDSnapView previous_snap = btn.getStoreSnapView();
+                                            previous_snap.getStoredButton().setText("wowww");
+//                                            generateButton(btn.getCellWidthRatio(),btn.getCellHeightRatio(),
+//                                                    previous_snap.getPositionX(),previous_snap.getPositionY()).setBackgroundColor( snap_view.getStoredButton().getColor());
+
+                                            RelativeLayout.LayoutParams new_pos = setGridPosition(btn.getCellWidthRatio(),btn.getCellHeightRatio(),
+                                                    snap_view.getPositionX(),snap_view.getPositionY());
+
+                                            RelativeLayout.LayoutParams old_pos = setGridPosition(btn.getCellWidthRatio(),btn.getCellHeightRatio(),
+                                                    previous_snap.getPositionX(),previous_snap.getPositionY());
+
+                                            btn.setLayoutParams(new_pos);
+                                            button_to_swap.setLayoutParams(old_pos);
+                                            button_to_swap.setText("power");
+
+                                            btn.setText("wowwwwwwwww");
+//                                            previous_snap.getStoredButton().setLayoutParams(new_pos);
+//                                            layout.removeView(snap_view.getStoredButton());
+                                            Log.d(TAG, "onDrag: is stored button null " + (snap_view.getStoredButton() == null));
+                                            Log.d(TAG, "onDrag: switching coordinates " + previous_snap.getPositionX() + "-"+ previous_snap.getPositionY());
+                                            Log.d(TAG, "onDrag: switching coordinates " + snap_view.getStoredButton().getStoreSnapView().getPositionX() + "-"+ snap_view.getStoredButton().getStoreSnapView().getPositionY());
+
+                                        }else {
+                                            return false;
+                                        }
+                                    }
+                                    else {
+                                        return false;
+                                    }
+                                }else {
+                                    btn.getLastLayout().removeView(current_drag_view );
+                                    drop_shadow_view.setBackgroundColor(background_color);
+                                    view.setBackgroundColor(background_color);
+                                    generateButton(btn.getCellWidthRatio(),btn.getCellHeightRatio(),snap_view.getPositionX(),snap_view.getPositionY())
+                                            .setBackgroundColor(btn.getColor());
+
+                                    btn.setLastLayout(layout);
+                                    btn.getBackground().setAlpha(255);
+                                    snap_view.setStoredButton(btn);
+                                    btn.setStoreSnapView(snap_view);
                                 }
 
-                                btn.getLastLayout().removeView(current_drag_view );
-                                drop_shadow_view.setBackgroundColor(background_color);
-                                view.setBackgroundColor(background_color);
-                                generateButton(btn.getCellWidthRatio(),btn.getCellHeightRatio(),snap_view.getPositionX(),snap_view.getPositionY());
-                                btn.setLastLayout(layout);
+
+
+
+
+
+
+
                                 break;
 
                             case DragEvent.ACTION_DRAG_ENDED:
                                 btn.getBackground().setAlpha(255);
-                                drop_shadow_view.setBackgroundColor(background_color);
-
-
+                                layout.removeView(drop_shadow_view);
                                 break;
 
                         }
@@ -202,8 +254,8 @@ public class DNDPager {
      * @param layout_size - the length of a layout e.g height or width
      * @return the cell_size
      */
-    private double getCellSize(int cell_count, double layout_size){
-        return layout_size / cell_count;
+    private int getCellSize(int cell_count, double layout_size){
+        return (int)layout_size / cell_count;
     }
 
     /**
@@ -244,8 +296,8 @@ public class DNDPager {
      * @param x - coordinates in the layout this is base on the snap gridview (the col_num).
      * @param y - coordinates in the layout this is base on the snap gridview (the row_num).
      */
-    public void generateButton(final int width_ratio,final int height_ratio,int x, int y){
-        final DNDButton btn = new DNDButton(context);
+    public DNDButton generateButton(final int width_ratio,final int height_ratio,final int x,final int y, DNDButton custom_btn){
+        final DNDButton btn = custom_btn != null ? custom_btn : new DNDButton(context);
 
         btn.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -261,8 +313,19 @@ public class DNDPager {
                         mimeTypes,
                         item
                 );
+
+
                 current_drag_view = v;
 
+                //search pair
+                if(btn.getStoreSnapView() == null){
+                    List<DNDSnapView> snap_list =  getSnapViews();
+                    for(DNDSnapView snap : snap_list ){
+                        if(snap.getPositionX() == x && snap.getPositionY() == y){
+                            btn.setStoreSnapView(snap);
+                        }
+                    }
+                }
 
                 if (me.getAction() == MotionEvent.ACTION_MOVE  ){
                     v.startDrag(data,shadowBuilder,null,0);
@@ -272,16 +335,48 @@ public class DNDPager {
             }
         });
 
-        btn.setBackgroundColor(Color.parseColor("#000fff"));
+        btn.setOnDragListener(new View.OnDragListener() {
+            @Override
+            public boolean onDrag(View view, DragEvent dragEvent) {
+                switch (dragEvent.getAction()){
+                    case DragEvent.ACTION_DRAG_ENTERED :
+                        Log.d(TAG, "onDrag: entered");
+                        button_to_swap = btn;
+                        break;
+                }
+                return true;
+            }
+        });
+
+
+
+        btn.setBackgroundColor(Color.GRAY);
         btn.setGroupId(group_id);
         btn.setLastLayout(layout);
+
+        btn.setBorder(5,background_color);
+
+
+
+
         btn.setCellWidthRatio(width_ratio);
         btn.setCellHeightRatio(height_ratio);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int)(width_ratio * cell_width),(int)(height_ratio * cell_height));
-        params.setMargins((int)(x * cell_width),(int)(y * cell_height),0,0);
-        btn.setLayoutParams(params);
+
+        btn.setLayoutParams(setGridPosition(width_ratio,height_ratio,x,y));
 
         layout.addView(btn);
+        return btn;
+    }
+
+    public DNDButton generateButton(final int width_ratio,final int height_ratio,int x, int y){
+        return generateButton(width_ratio,height_ratio,x,y,null);
+    }
+
+
+    public RelativeLayout.LayoutParams setGridPosition(double width_ratio,double height_ratio,int x, int y){
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int)(width_ratio * cell_width),(int)(height_ratio * cell_height));
+        params.setMargins((int)(x * cell_width),(int)(y * cell_height),0,0);
+        return params;
     }
 
     /**
@@ -317,15 +412,18 @@ public class DNDPager {
      */
     public boolean hasOverlapView(ViewGroup.MarginLayoutParams params, DNDButton btn){
 
+        Log.d(TAG, "hasOverlapView: shrink size" + shrinkSize(params.leftMargin + cell_width * btn.getCellWidthRatio(),margin_percentage));
+        Log.d(TAG, "hasOverlapView: actual size " + params.leftMargin + cell_width * btn.getCellWidthRatio());
        for(DNDButton b : getButtons()){
-            if(
-                    b.getParams().leftMargin < params.leftMargin + cell_width * btn.getCellWidthRatio()
+            if(     b != btn &&
+                    expandSize(b.getParams().leftMargin,margin_percentage)< params.leftMargin + cell_width * btn.getCellWidthRatio()
                     &&
-                    getButtonFullWidth(b) > params.leftMargin
+                    shrinkSize(getButtonFullWidth(b),margin_percentage)> params.leftMargin
                     &&
-                    b.getParams().topMargin < params.topMargin + cell_height * btn.getCellHeightRatio()
+                    expandSize(b.getParams().topMargin,margin_percentage)< params.topMargin + cell_height * btn.getCellHeightRatio()
                     &&
-                    getButtonFullHeight(b) > params.topMargin
+                    shrinkSize(getButtonFullHeight(b),margin_percentage)> params.topMargin
+
             ){
                 return true;
             }
@@ -366,6 +464,52 @@ public class DNDPager {
         }
         Log.d(TAG, "getButtons: " + btn.size());
         return btn;
+    }
+
+    /**
+     * Takes all snapviews inside a layout.
+     * @return list of snap_views
+     */
+    public List<DNDSnapView> getSnapViews(){
+        List<DNDSnapView> btn = new ArrayList<>();
+        for (int i = 0; i < layout.getChildCount(); i++) {
+            View child = layout.getChildAt(i);
+            if(child instanceof DNDSnapView){
+                btn.add((DNDSnapView) child);
+            }
+        }
+        Log.d(TAG, "getSnapViews: " + btn.size());
+        return btn;
+    }
+
+    /**
+     * shrink the size base on percentage
+     * @param size - target value
+     * @param percentage - works effectively with range 0.0 to 1.0f;
+     * @return shrink size
+     */
+    public double shrinkSize(double size, double percentage){
+        Log.d(TAG, "shrinkSize: " + size + " " + percentage);
+        return size - size * percentage;
+    }
+
+    /**
+     * expand the size base on percentage
+     * @param size - target value
+     * @param percentage - works effectively with range 0.0 to 1.0f;
+     * @return
+     */
+    public double expandSize(double size, double percentage){
+        Log.d(TAG, "shrinkSize: " + size + " " + percentage);
+        return size + size * percentage;
+    }
+
+    public boolean hasTheSameRatio(DNDButton btn1, DNDButton btn2){
+        if(btn1.getCellHeightRatio() == btn2.getCellHeightRatio()
+        && btn1.getCellWidthRatio() == btn2.getCellWidthRatio()){
+            return true;
+        }
+        return false;
     }
 
 }
