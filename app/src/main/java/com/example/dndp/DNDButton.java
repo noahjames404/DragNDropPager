@@ -1,5 +1,6 @@
 package com.example.dndp;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,8 +20,9 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.RequiresApi;
+@SuppressLint("AppCompatCustomView")
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-public class DNDButton extends Button {
+public class DNDButton extends Button implements IDNDPager.Item, IDNDPager.ItemEvent {
     private int cell_width, cell_height;
 
     private String group_id;
@@ -29,16 +31,13 @@ public class DNDButton extends Button {
 
     private GradientDrawable gradient_drawable;
 
-    private DNDSnapView store_snap_view;
-
-    private DNDUtils utils;
-
     private int color;
+
+    private int x,y;
 
     public DNDButton(Context context) {
         super(context);
         gradient_drawable = new GradientDrawable();
-        utils = new DNDUtils();
     }
 
     public int getCellWidthRatio() {
@@ -73,10 +72,7 @@ public class DNDButton extends Button {
         this.group_id = group_id;
     }
 
-    public ViewGroup.MarginLayoutParams getParams(){
-       ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) getLayoutParams();
-       return params;
-    }
+
 
 
 
@@ -117,16 +113,35 @@ public class DNDButton extends Button {
         setBackground(result);
     }
 
-    public DNDSnapView getStoreSnapView() {
-        return store_snap_view;
+    @Override
+    public void setPosition(int x, int y) {
+        this.x = x;
+        this.y = y;
     }
 
-    public void setStoreSnapView(DNDSnapView store_snap_view) {
-        this.store_snap_view = store_snap_view;
+    @Override
+    public void setPosition(IDNDPager.Coordinates coordinates) {
+        x = coordinates.getPositionX();
+        y = coordinates.getPositionY();
     }
 
-    public void destory(){
-        layout.removeView(this);
+    @Override
+    public int getPositionX() {
+        return x;
     }
 
+    @Override
+    public int getPositionY() {
+        return y;
+    }
+
+    @Override
+    public void onDrag() {
+
+    }
+
+    @Override
+    public void onDrop() {
+
+    }
 }

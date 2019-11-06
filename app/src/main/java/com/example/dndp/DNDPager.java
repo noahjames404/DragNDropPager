@@ -93,15 +93,17 @@ public class DNDPager {
                 cell_width = getCellSize(col_num,width);
 
                 generateSnapGrid();
-                generateButton(1,1,0,0).setBackgroundColor(Color.BLACK);
-                generateButton(1,1,1,0);
-                generateButton(1,1,2,0);
-                generateButton(1,1,3,0);
+                generateButton(2,2,0,0).setBackgroundColor(Color.BLACK);
+//                generateButton(2,2,1,0);
+                generateButton(2,2,2,0);
+                generateButton(2,3,0,3);
+                generateButton(2,3,3,3);
+//                generateButton(1,1,3,0);
 
-                generateButton(1,1,0,1);
-                generateButton(1,1,1,1);
-                generateButton(1,1,2,1);
-                generateButton(1,1,3,1);
+//                generateButton(1,1,0,1);
+//                generateButton(1,1,1,1);
+//                generateButton(1,1,2,1);
+                generateButton(1,1,3,1).setImage(2, context.getDrawable(R.drawable.dummy_image));
             }
         });
     }
@@ -125,7 +127,7 @@ public class DNDPager {
                 int y_margin =(int)(y * cell_height);
                 params.setMargins(x_margin, y_margin,0,0);
                 /**
-                    guide only
+                    guide only: creates a chess pattern in the layout.
                  */
 //                snap_view.setBackgroundColor((y + x) % 2== 0? Color.parseColor("#74b9ff"): Color.parseColor("#0984e3"));
                 snap_view.setBackgroundColor(background_color);
@@ -135,11 +137,14 @@ public class DNDPager {
                 snap_view.setOnDragListener(new View.OnDragListener() {
                     @Override
                     public boolean onDrag(View view, DragEvent dragEvent) {
+                        /**
+                         * this variables are active in different business logic to reuse its data type.
+                         */
                         ColorDrawable bg_color = (ColorDrawable)view.getBackground();
                         ViewGroup.MarginLayoutParams vlp = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
                         DNDSnapView snap_view = (DNDSnapView) view;
                         RelativeLayout current_layout;
-
+                        RelativeLayout.LayoutParams cell_point;
                         DNDButton btn = (DNDButton) current_drag_view;
 
                         switch (dragEvent.getAction()){
@@ -148,24 +153,32 @@ public class DNDPager {
                                 btn.getBackground().setAlpha(100);
                                 break;
                             case DragEvent.ACTION_DRAG_ENTERED:
-
+                                /**
+                                 * when a view enters the snap_view (cell)
+                                 * it creates a shadow where it will be drop when the user releases
+                                 * this serves as a guideline for the user.
+                                 *
+                                 */
                                 drop_shadow_view = new View(context);
                                 current_layout = snap_view.getLayout();
                                 RelativeLayout.LayoutParams shadow_params = new RelativeLayout.LayoutParams(current_drag_view.getWidth(),current_drag_view.getHeight());
                                 shadow_params.setMargins(vlp.leftMargin,vlp.topMargin,0,0);
                                 drop_shadow_view.setLayoutParams(shadow_params);
-
                                 drop_shadow_view.setBackgroundColor(colorContrast(bg_color.getColor(),0.8f));
                                 current_layout.addView(drop_shadow_view);
 
                                 break;
                             case DragEvent.ACTION_DRAG_EXITED:
+                                /**
+                                 * when the view exits the cell, it is returned to its default color.
+                                 */
                                 drop_shadow_view.setBackgroundColor(background_color);
                                 break;
                             case DragEvent.ACTION_DRAG_LOCATION:
+                                //do nothing
                                 break;
                             case DragEvent.ACTION_DROP:
-                                //check if view is outside of bound
+                                //check if view is outside of bounds (layout)
                                 if(vlp.leftMargin + current_drag_view.getWidth() > layout_width
                                         ||
                                    vlp.topMargin + current_drag_view.getHeight() > layout_height){
@@ -177,64 +190,88 @@ public class DNDPager {
                                 }
                                 //check if it overlaps other views (buttons)
                                 if(hasOverlapView(vlp,btn)){
-                                    //this section checks if it is able to switch places with another button.
-                                    //check if both buttons has the same ratio stored
-                                    if(hasTheSameRatio(snap_view.getStoredButton(),btn)){
-                                        //check if both buttons are in the same layout
-                                        if(btn.getLastLayout() == layout){
-                                           //switch
-                                            DNDSnapView previous_snap = btn.getStoreSnapView();
-                                            previous_snap.getStoredButton().setText("wowww");
-//                                            generateButton(btn.getCellWidthRatio(),btn.getCellHeightRatio(),
-//                                                    previous_snap.getPositionX(),previous_snap.getPositionY()).setBackgroundColor( snap_view.getStoredButton().getColor());
 
-                                            RelativeLayout.LayoutParams new_pos = setGridPosition(btn.getCellWidthRatio(),btn.getCellHeightRatio(),
-                                                    snap_view.getPositionX(),snap_view.getPositionY());
-
-                                            RelativeLayout.LayoutParams old_pos = setGridPosition(btn.getCellWidthRatio(),btn.getCellHeightRatio(),
-                                                    previous_snap.getPositionX(),previous_snap.getPositionY());
-
-                                            btn.setLayoutParams(new_pos);
-                                            button_to_swap.setLayoutParams(old_pos);
-                                            button_to_swap.setText("power");
-
-                                            btn.setText("wowwwwwwwww");
-//                                            previous_snap.getStoredButton().setLayoutParams(new_pos);
-//                                            layout.removeView(snap_view.getStoredButton());
-                                            Log.d(TAG, "onDrag: is stored button null " + (snap_view.getStoredButton() == null));
-                                            Log.d(TAG, "onDrag: switching coordinates " + previous_snap.getPositionX() + "-"+ previous_snap.getPositionY());
-                                            Log.d(TAG, "onDrag: switching coordinates " + snap_view.getStoredButton().getStoreSnapView().getPositionX() + "-"+ snap_view.getStoredButton().getStoreSnapView().getPositionY());
-
-                                        }else {
+                                    DNDButton current_cell = getButtonByCoordinates(snap_view.getPositionX(),snap_view.getPositionY());
+                                    /**
+                                     * check if the cell (snap_view) is already occupied,
+                                     * the getButtonByCoordinates() returns null if it is unoccupied
+                                     */
+                                    if(current_cell != null){
+                                        /**
+                                          check if both parties has the same ratio (width & height).
+                                         */
+                                        if(!hasTheSameRatio(current_cell,btn)){
                                             return false;
                                         }
-                                    }
-                                    else {
-                                        return false;
+
+
+                                        /**
+                                         * This might be confusing at first but it is simple.
+                                         * When swapping views both parties switch coordinates.
+                                         * Since we cannot guarantee the size of layout which may change at any point in time
+                                         * a recalculation is done using setGridPosition() this gives a definite size and location for the view.
+                                         * then updates their current coordinates in the layout.
+                                         */
+
+                                        //view a
+                                        cell_point = setGridPosition(btn.getCellWidthRatio(),btn.getCellHeightRatio(),btn.getPositionX(),btn.getPositionY());
+                                        current_cell.setLayoutParams(cell_point);
+                                        current_cell.setPosition(btn);
+
+                                        //view b
+                                        cell_point = setGridPosition(btn.getCellWidthRatio(),btn.getCellHeightRatio(),snap_view.getPositionX(),snap_view.getPositionY());
+                                        btn.setLayoutParams(cell_point);
+                                        btn.setPosition(snap_view);
+
+                                        /**
+                                         * When both parties are in different layouts,
+                                         * they switch layouts.
+                                         */
+                                        if(btn.getLastLayout() != layout) {
+                                            //view a
+                                            layout.removeView(current_cell);
+                                            btn.getLastLayout().addView(current_cell);
+                                            current_cell.setLastLayout(btn.getLastLayout());
+                                            //view b
+                                            btn.getLastLayout().removeView(btn);
+                                            layout.addView(btn);
+                                            btn.setLastLayout(layout);
+
+                                        }
+                                        /**
+                                         * returns to their current states of background (opacity).
+                                         */
+                                        current_cell.getBackground().setAlpha(255);
+                                        btn.getBackground().setAlpha(255);
                                     }
                                 }else {
-                                    btn.getLastLayout().removeView(current_drag_view );
+                                    /**
+                                     * when cell is unoccupied, the view is able to occupy the cell
+                                     * the view's coordinates are updated to snap_view's coordinates.
+                                     */
                                     drop_shadow_view.setBackgroundColor(background_color);
                                     view.setBackgroundColor(background_color);
-                                    generateButton(btn.getCellWidthRatio(),btn.getCellHeightRatio(),snap_view.getPositionX(),snap_view.getPositionY())
-                                            .setBackgroundColor(btn.getColor());
-
-                                    btn.setLastLayout(layout);
+                                    cell_point = setGridPosition(btn.getCellWidthRatio(),btn.getCellHeightRatio(),snap_view.getPositionX(),snap_view.getPositionY());
+                                    btn.setLayoutParams(cell_point);
+                                    btn.setPosition(snap_view);
                                     btn.getBackground().setAlpha(255);
-                                    snap_view.setStoredButton(btn);
-                                    btn.setStoreSnapView(snap_view);
+
+                                    /**
+                                     * when the unoccupied cell is located in foreign layout it is transfer to that layout.
+                                     */
+                                    if(btn.getLastLayout() != layout){
+                                        btn.getLastLayout().removeView(current_drag_view );
+                                        btn.setLastLayout(layout);
+                                        layout.addView(btn);
+
+                                    }
                                 }
-
-
-
-
-
-
-
-
                                 break;
 
                             case DragEvent.ACTION_DRAG_ENDED:
+                                /**
+                                 * resets temporary changes to default.
+                                 */
                                 btn.getBackground().setAlpha(255);
                                 layout.removeView(drop_shadow_view);
                                 break;
@@ -296,83 +333,51 @@ public class DNDPager {
      * @param x - coordinates in the layout this is base on the snap gridview (the col_num).
      * @param y - coordinates in the layout this is base on the snap gridview (the row_num).
      */
-    public DNDButton generateButton(final int width_ratio,final int height_ratio,final int x,final int y, DNDButton custom_btn){
-        final DNDButton btn = custom_btn != null ? custom_btn : new DNDButton(context);
+    public DNDButton generateButton(final int width_ratio,final int height_ratio,final int x,final int y){
+        final DNDButton btn = new DNDButton(context);
 
         btn.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent me) {
                 View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(btn);
-
-                ClipData.Item item = null;
-
-                item = new ClipData.Item( "" + v.getId());
-                String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
-                ClipData data = new ClipData(
-                        btn.toString(),
-                        mimeTypes,
-                        item
-                );
-
-
+                /**
+                 * updates the current view being drag.
+                 */
                 current_drag_view = v;
 
-                //search pair
-                if(btn.getStoreSnapView() == null){
-                    List<DNDSnapView> snap_list =  getSnapViews();
-                    for(DNDSnapView snap : snap_list ){
-                        if(snap.getPositionX() == x && snap.getPositionY() == y){
-                            btn.setStoreSnapView(snap);
-                        }
-                    }
-                }
-
                 if (me.getAction() == MotionEvent.ACTION_MOVE  ){
-                    v.startDrag(data,shadowBuilder,null,0);
+                    v.startDrag(null,shadowBuilder,null,0);
                 }
 
                 return true;
             }
         });
 
-        btn.setOnDragListener(new View.OnDragListener() {
-            @Override
-            public boolean onDrag(View view, DragEvent dragEvent) {
-                switch (dragEvent.getAction()){
-                    case DragEvent.ACTION_DRAG_ENTERED :
-                        Log.d(TAG, "onDrag: entered");
-                        button_to_swap = btn;
-                        break;
-                }
-                return true;
-            }
-        });
+
 
 
 
         btn.setBackgroundColor(Color.GRAY);
         btn.setGroupId(group_id);
         btn.setLastLayout(layout);
-
         btn.setBorder(5,background_color);
-
-
-
-
         btn.setCellWidthRatio(width_ratio);
         btn.setCellHeightRatio(height_ratio);
-
+        btn.setPosition(x,y);
         btn.setLayoutParams(setGridPosition(width_ratio,height_ratio,x,y));
 
         layout.addView(btn);
         return btn;
     }
 
-    public DNDButton generateButton(final int width_ratio,final int height_ratio,int x, int y){
-        return generateButton(width_ratio,height_ratio,x,y,null);
-    }
-
-
+    /**
+     * calculates the cell designated position base on the cell ratio given followed by x & y coordinates
+     * @param width_ratio - cell_width
+     * @param height_ratio - cell_height
+     * @param x - position in layout
+     * @param y - position in layout
+     * @return LayoutParameters
+     */
     public RelativeLayout.LayoutParams setGridPosition(double width_ratio,double height_ratio,int x, int y){
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int)(width_ratio * cell_width),(int)(height_ratio * cell_height));
         params.setMargins((int)(x * cell_width),(int)(y * cell_height),0,0);
@@ -416,11 +421,11 @@ public class DNDPager {
         Log.d(TAG, "hasOverlapView: actual size " + params.leftMargin + cell_width * btn.getCellWidthRatio());
        for(DNDButton b : getButtons()){
             if(     b != btn &&
-                    expandSize(b.getParams().leftMargin,margin_percentage)< params.leftMargin + cell_width * btn.getCellWidthRatio()
+                    expandSize(getParams(b).leftMargin,margin_percentage)< params.leftMargin + cell_width * btn.getCellWidthRatio()
                     &&
                     shrinkSize(getButtonFullWidth(b),margin_percentage)> params.leftMargin
                     &&
-                    expandSize(b.getParams().topMargin,margin_percentage)< params.topMargin + cell_height * btn.getCellHeightRatio()
+                    expandSize(getParams(b).topMargin,margin_percentage)< params.topMargin + cell_height * btn.getCellHeightRatio()
                     &&
                     shrinkSize(getButtonFullHeight(b),margin_percentage)> params.topMargin
 
@@ -431,6 +436,9 @@ public class DNDPager {
        return false;
     }
 
+    private ViewGroup.MarginLayoutParams getParams(View view){
+        return (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+    }
 
     /**
      * Takes the full width of a button base on the cell_width.
@@ -438,7 +446,7 @@ public class DNDPager {
      * @return returns the full size
      */
     private double getButtonFullWidth(DNDButton btn){
-        return btn.getParams().leftMargin + cell_width * btn.getCellWidthRatio();
+        return getParams(btn).leftMargin + cell_width * btn.getCellWidthRatio();
     }
 
     /**
@@ -447,7 +455,7 @@ public class DNDPager {
      * @return returns the full size
      */
     private double getButtonFullHeight(DNDButton btn){
-        return btn.getParams().topMargin + cell_height * btn.getCellWidthRatio();
+        return getParams(btn).topMargin + cell_height * btn.getCellWidthRatio();
     }
 
     /**
@@ -504,12 +512,33 @@ public class DNDPager {
         return size + size * percentage;
     }
 
+    /**
+     * Checks if both parties has the same ratio
+     * @param btn1 to compare
+     * @param btn2 to compare
+     * @return true if they have the same ratio
+     */
     public boolean hasTheSameRatio(DNDButton btn1, DNDButton btn2){
         if(btn1.getCellHeightRatio() == btn2.getCellHeightRatio()
         && btn1.getCellWidthRatio() == btn2.getCellWidthRatio()){
             return true;
         }
         return false;
+    }
+
+    /**
+     * get button by coordinates inside the layout
+     * @param x
+     * @param y
+     * @return the button that has the coordinates
+     */
+    public DNDButton getButtonByCoordinates(int x, int y){
+        for(DNDButton b : getButtons()){
+            if(b.getPositionX() == x && b.getPositionY() == y){
+                return  b;
+            }
+        }
+        return null;
     }
 
 }

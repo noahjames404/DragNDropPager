@@ -4,18 +4,14 @@ import android.content.Context;
 import android.view.View;
 import android.widget.RelativeLayout;
 
-public class DNDSnapView extends View {
+public class DNDSnapView extends View implements IDNDPager.Coordinates {
 
     /**
      * The position of view element inside the relative view.
      * */
     private int x =0,y =0;
 
-    private boolean is_occupied = false;
-
     private RelativeLayout layout;
-
-    private DNDButton stored_button;
 
     public DNDSnapView(Context context) {
         super(context);
@@ -26,20 +22,19 @@ public class DNDSnapView extends View {
         this.y = y;
     }
 
+    @Override
+    public void setPosition(IDNDPager.Coordinates coordinates) {
+        x = coordinates.getPositionX();
+        y = coordinates.getPositionY();
+    }
+
+
     public int getPositionX(){
         return x;
     }
 
     public int getPositionY(){
         return y;
-    }
-
-    public boolean isOccupied(){
-        return is_occupied;
-    }
-
-    public void setOccupancy(boolean status){
-        is_occupied = status;
     }
 
     public void setLayout(RelativeLayout layout){
@@ -50,11 +45,4 @@ public class DNDSnapView extends View {
         return layout;
     }
 
-    public DNDButton getStoredButton() {
-        return stored_button;
-    }
-
-    public void setStoredButton(DNDButton stored_button) {
-        this.stored_button = stored_button;
-    }
 }
