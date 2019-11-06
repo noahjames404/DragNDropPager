@@ -46,4 +46,8 @@ public interface IDNDPager {
 
         Item getItem();
     }
+
+    interface ActionEvent {
+        void onExecute();
+    }
 }

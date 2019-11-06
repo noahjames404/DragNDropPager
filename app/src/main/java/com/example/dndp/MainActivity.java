@@ -21,9 +21,11 @@ public class MainActivity extends AppCompatActivity {
         DNDPager pager = new DNDPager(rl,6,6,group_id,getApplicationContext());
         pager.setBackgroundColor(Color.parseColor("#fff000"));
         pager.render();
+        pager.setEditable(true);
 
-        DNDPager pager1 = new DNDPager(rl_1,6,6,group_id +"",getApplicationContext());
+        DNDPager pager1 = new DNDPager(rl_1,6,6,group_id,getApplicationContext());
         pager1.render();
+        pager1.setEditable(true);
 
     }
 }

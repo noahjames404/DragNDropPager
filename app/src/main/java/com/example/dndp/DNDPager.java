@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -67,8 +68,17 @@ public class DNDPager {
      * background color of the layout, since the layout's background color would be override by the grid snap view.
      */
     private int background_color = Color.WHITE;
+    /**
+     * grant user to drag & drop views
+     */
+    private boolean editable = false;
 
-    private DNDButton button_to_swap;
+    /**
+     * set the default invalid color, this is used when a view overlaps another view.
+     */
+    private int invalid_color = Color.parseColor("#e74c3c");
+
+
 
     /**
         @param layout items are populated in this layout.
@@ -137,6 +147,9 @@ public class DNDPager {
                 snap_view.setOnDragListener(new View.OnDragListener() {
                     @Override
                     public boolean onDrag(View view, DragEvent dragEvent) {
+                        if(!editable){
+                            return false;
+                        }
                         /**
                          * this variables are active in different business logic to reuse its data type.
                          */
@@ -153,6 +166,7 @@ public class DNDPager {
                                 btn.getBackground().setAlpha(100);
                                 break;
                             case DragEvent.ACTION_DRAG_ENTERED:
+
                                 /**
                                  * when a view enters the snap_view (cell)
                                  * it creates a shadow where it will be drop when the user releases
@@ -161,11 +175,25 @@ public class DNDPager {
                                  */
                                 drop_shadow_view = new View(context);
                                 current_layout = snap_view.getLayout();
-                                RelativeLayout.LayoutParams shadow_params = new RelativeLayout.LayoutParams(current_drag_view.getWidth(),current_drag_view.getHeight());
-                                shadow_params.setMargins(vlp.leftMargin,vlp.topMargin,0,0);
+
+                                RelativeLayout.LayoutParams shadow_params = setGridPosition(btn.getCellWidthRatio(),btn.getCellHeightRatio(),snap_view.getPositionX(),snap_view.getPositionY());
                                 drop_shadow_view.setLayoutParams(shadow_params);
                                 drop_shadow_view.setBackgroundColor(colorContrast(bg_color.getColor(),0.8f));
                                 current_layout.addView(drop_shadow_view);
+
+
+                                //check if view is outside of bounds (layout)
+
+                                /**
+                                 * check if view overlaps another view
+                                 */
+                                cell_point = setGridPosition(btn.getCellWidthRatio(),btn.getCellHeightRatio(),snap_view.getPositionX(),snap_view.getPositionY());
+                                if(hasOverlapView(getParams(drop_shadow_view),btn)
+                                        || vlp.leftMargin + cell_point.width > layout_width
+                                        || vlp.topMargin + cell_point.height > layout_height){
+                                    drop_shadow_view.setBackgroundColor(invalid_color);
+                                    drop_shadow_view.getBackground().setAlpha(100);
+                                }
 
                                 break;
                             case DragEvent.ACTION_DRAG_EXITED:
@@ -179,9 +207,10 @@ public class DNDPager {
                                 break;
                             case DragEvent.ACTION_DROP:
                                 //check if view is outside of bounds (layout)
-                                if(vlp.leftMargin + current_drag_view.getWidth() > layout_width
+                                cell_point = setGridPosition(btn.getCellWidthRatio(),btn.getCellHeightRatio(),snap_view.getPositionX(),snap_view.getPositionY());
+                                if(vlp.leftMargin + cell_point.width > layout_width
                                         ||
-                                   vlp.topMargin + current_drag_view.getHeight() > layout_height){
+                                   vlp.topMargin + cell_point.height > layout_height){
                                     return false;
                                 }
                                 //check if button group id is equal to layout's group id.
@@ -326,6 +355,7 @@ public class DNDPager {
         });
     }
 
+
     /**
      * Creates a DNDButton to be viewed in the layout.
      * @param width_ratio - the ratio is base on the layout_width
@@ -335,16 +365,35 @@ public class DNDPager {
      */
     public DNDButton generateButton(final int width_ratio,final int height_ratio,final int x,final int y){
         final DNDButton btn = new DNDButton(context);
+        final DNDDoubleTap dbtap = new DNDDoubleTap();
 
         btn.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent me) {
+                if(!editable){
+                    return false;
+                }
                 View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(btn);
                 /**
                  * updates the current view being drag.
                  */
                 current_drag_view = v;
 
+                if(me.getAction() == MotionEvent.ACTION_UP){
+                    Log.d(TAG, "onTouch: unclicked");
+                    dbtap.onRelease(new IDNDPager.ActionEvent() {
+                        @Override
+                        public void onExecute() {
+                            Log.d(TAG, "onTouch: executing");
+                            Toast.makeText(context,"power",Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+                if(me.getAction() == MotionEvent.ACTION_DOWN){
+                    Log.d(TAG, "onTouch: cliked");
+                    dbtap.onTap();
+
+                }
                 if (me.getAction() == MotionEvent.ACTION_MOVE  ){
                     v.startDrag(null,shadowBuilder,null,0);
                 }
@@ -354,7 +403,12 @@ public class DNDPager {
         });
 
 
-
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context,"hello",Toast.LENGTH_SHORT).show();
+            }
+        });
 
 
         btn.setBackgroundColor(Color.GRAY);
@@ -378,7 +432,7 @@ public class DNDPager {
      * @param y - position in layout
      * @return LayoutParameters
      */
-    public RelativeLayout.LayoutParams setGridPosition(double width_ratio,double height_ratio,int x, int y){
+    private RelativeLayout.LayoutParams setGridPosition(double width_ratio,double height_ratio,int x, int y){
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int)(width_ratio * cell_width),(int)(height_ratio * cell_height));
         params.setMargins((int)(x * cell_width),(int)(y * cell_height),0,0);
         return params;
@@ -399,7 +453,7 @@ public class DNDPager {
      * @param factor - ranges from 0.8 to 1.0f to set the contrast
      * @return the contrasted value.
      */
-    public int colorContrast(int color, float factor) {
+    private int colorContrast(int color, float factor) {
         int a = Color.alpha(color);
         int r = Math.round(Color.red(color) * factor);
         int g = Math.round(Color.green(color) * factor);
@@ -415,7 +469,7 @@ public class DNDPager {
      * @param params - the button to be check.
      * @return true if it has overlap.
      */
-    public boolean hasOverlapView(ViewGroup.MarginLayoutParams params, DNDButton btn){
+    private boolean hasOverlapView(ViewGroup.MarginLayoutParams params, DNDButton btn){
 
         Log.d(TAG, "hasOverlapView: shrink size" + shrinkSize(params.leftMargin + cell_width * btn.getCellWidthRatio(),margin_percentage));
         Log.d(TAG, "hasOverlapView: actual size " + params.leftMargin + cell_width * btn.getCellWidthRatio());
@@ -540,5 +594,22 @@ public class DNDPager {
         }
         return null;
     }
+
+    public boolean isEditable() {
+        return editable;
+    }
+
+    public void setEditable(boolean editable) {
+        this.editable = editable;
+    }
+
+    public int getInvalidColor() {
+        return invalid_color;
+    }
+
+    public void setInvalidColor(int invalid_color) {
+        this.invalid_color = invalid_color;
+    }
+
 
 }
