@@ -1,22 +1,12 @@
-package com.example.dndp;
+package com.example.dndp.DND;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
-import android.graphics.drawable.PictureDrawable;
 import android.os.Build;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.RequiresApi;
@@ -72,10 +62,6 @@ public class DNDButton extends Button implements IDNDPager.Item, IDNDPager.ItemE
         this.group_id = group_id;
     }
 
-
-
-
-
     @Override
     public void setBackgroundColor(int color) {
         this.color = color;
@@ -105,7 +91,7 @@ public class DNDButton extends Button implements IDNDPager.Item, IDNDPager.ItemE
     }
 
 
-    public void setImage(int border,Drawable image){
+    public void setBackgroundImage(int border, Drawable image){
         GradientDrawable frame = gradient_drawable;
         frame.setColor(0x000000ff);
         Drawable[] layers = {image,frame};
@@ -144,4 +130,7 @@ public class DNDButton extends Button implements IDNDPager.Item, IDNDPager.ItemE
     public void onDrop() {
 
     }
+
+
+
 }

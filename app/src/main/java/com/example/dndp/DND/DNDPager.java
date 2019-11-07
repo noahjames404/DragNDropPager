@@ -1,7 +1,5 @@
-package com.example.dndp;
+package com.example.dndp.DND;
 
-import android.content.ClipData;
-import android.content.ClipDescription;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -15,7 +13,7 @@ import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
+import com.example.dndp.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +59,7 @@ public class DNDPager {
      * The margin in width & height of a button, use for checking the sizes in buttons.
      * a percentage is ignored when an element overlaps another element.
      */
-    private double margin_percentage = 0.05;
+    private double margin_percentage = 0.00;
 
 
     /**
@@ -78,7 +76,33 @@ public class DNDPager {
      */
     private int invalid_color = Color.parseColor("#e74c3c");
 
+    /**
+     * the default height & width of pins
+     */
+    private int pin_height =70, pin_width =70;
 
+    /**
+     * the distance of the pin from the view, 0 starts at edge
+     */
+    private int pin_distance = 70;
+
+    /**
+     * action response when button is double tap (only applies when editable set to true)
+     */
+    private IDNDPager.ItemView db_tap_event;
+
+    public enum MESSAGE {
+      OUT_OF_BOUNDS,
+      OVERLAPPED,
+      SAVED,
+    }
+
+    private static DNDPin pin_left, pin_top,pin_right,pin_bottom;
+
+    /**
+     * used for events
+     */
+    private DNDPager instance;
 
     /**
         @param layout items are populated in this layout.
@@ -89,6 +113,8 @@ public class DNDPager {
         this.row_num = row_num;
         this.col_num = col_num;
         this.group_id = group_id;
+
+        instance = this;
     }
     /**
      * Changes are applied and start to load the views.
@@ -113,7 +139,7 @@ public class DNDPager {
 //                generateButton(1,1,0,1);
 //                generateButton(1,1,1,1);
 //                generateButton(1,1,2,1);
-                generateButton(1,1,3,1).setImage(2, context.getDrawable(R.drawable.dummy_image));
+                generateButton(1,1,3,1).setBackgroundImage(2, context.getDrawable(R.drawable.dummy_image));
             }
         });
     }
@@ -164,6 +190,13 @@ public class DNDPager {
                             case DragEvent.ACTION_DRAG_STARTED:
                                 current_layout = snap_view.getLayout();
                                 btn.getBackground().setAlpha(100);
+
+                                if(pin_left != null){
+                                    pin_left.setVisibility(View.INVISIBLE);
+                                    pin_top.setVisibility(View.INVISIBLE);
+                                    pin_right.setVisibility(View.INVISIBLE);
+                                    pin_bottom.setVisibility(View.INVISIBLE);
+                                }
                                 break;
                             case DragEvent.ACTION_DRAG_ENTERED:
 
@@ -201,9 +234,14 @@ public class DNDPager {
                                  * when the view exits the cell, it is returned to its default color.
                                  */
                                 drop_shadow_view.setBackgroundColor(background_color);
+                                layout.removeView(pin_top);
+                                layout.removeView(pin_left);
+                                layout.removeView(pin_right);
+                                layout.removeView(pin_bottom);
                                 break;
                             case DragEvent.ACTION_DRAG_LOCATION:
                                 //do nothing
+
                                 break;
                             case DragEvent.ACTION_DROP:
                                 //check if view is outside of bounds (layout)
@@ -367,9 +405,10 @@ public class DNDPager {
         final DNDButton btn = new DNDButton(context);
         final DNDDoubleTap dbtap = new DNDDoubleTap();
 
+
         btn.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent me) {
+            public boolean onTouch(final View v, MotionEvent me) {
                 if(!editable){
                     return false;
                 }
@@ -380,12 +419,26 @@ public class DNDPager {
                 current_drag_view = v;
 
                 if(me.getAction() == MotionEvent.ACTION_UP){
+                    v.performClick();
                     Log.d(TAG, "onTouch: unclicked");
                     dbtap.onRelease(new IDNDPager.ActionEvent() {
                         @Override
                         public void onExecute() {
-                            Log.d(TAG, "onTouch: executing");
-                            Toast.makeText(context,"power",Toast.LENGTH_SHORT).show();
+                            if(db_tap_event != null){
+                                db_tap_event.onCustomize(instance,v);
+//                                DNDButton btn = (DNDButton) v;
+//                                pin_top = generatePin(btn,"top");
+//                                pin_left = generatePin(btn,"left");
+//                                pin_right = generatePin(btn,"right");
+//                                pin_bottom = generatePin(btn,"bottom");
+//
+//                                btn.getLastLayout().addView(pin_top);
+//                                btn.getLastLayout().addView(pin_left);
+//                                btn.getLastLayout().addView(pin_right);
+//                                btn.getLastLayout().addView(pin_bottom);
+                            }else {
+                                Log.d(TAG, "onExecute: no active onCustomize listener");
+                            }
                         }
                     });
                 }
@@ -403,10 +456,14 @@ public class DNDPager {
         });
 
 
+
+
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context,"hello",Toast.LENGTH_SHORT).show();
+                if(!editable){
+                    Toast.makeText(context,"hello",Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -432,7 +489,7 @@ public class DNDPager {
      * @param y - position in layout
      * @return LayoutParameters
      */
-    private RelativeLayout.LayoutParams setGridPosition(double width_ratio,double height_ratio,int x, int y){
+    public RelativeLayout.LayoutParams setGridPosition(double width_ratio,double height_ratio,int x, int y){
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int)(width_ratio * cell_width),(int)(height_ratio * cell_height));
         params.setMargins((int)(x * cell_width),(int)(y * cell_height),0,0);
         return params;
@@ -466,7 +523,8 @@ public class DNDPager {
 
     /**
      * determines if the element overlaps to other elements
-     * @param params - the button to be check.
+     * @param btn - takes the ratio to validate
+     * @param params - new coordinates & size to validate
      * @return true if it has overlap.
      */
     private boolean hasOverlapView(ViewGroup.MarginLayoutParams params, DNDButton btn){
@@ -610,6 +668,77 @@ public class DNDPager {
     public void setInvalidColor(int invalid_color) {
         this.invalid_color = invalid_color;
     }
+
+    public void setOnCustomize(IDNDPager.ItemView view){
+        db_tap_event = view;
+    }
+
+    /**
+     * check the buttons coordinates & ratio
+     * @param btn to validate
+     * @return response
+     */
+    public MESSAGE checkItem(ViewGroup.MarginLayoutParams params, DNDButton btn){
+        if(hasOverlapView(params,btn)){
+            return MESSAGE.OVERLAPPED;
+        } else if(params.leftMargin + params.width > layout_width
+                ||
+                params.topMargin + params.height > layout_height){
+            return MESSAGE.OUT_OF_BOUNDS;
+        }
+        else {
+            return MESSAGE.SAVED;
+        }
+
+
+    }
+
+    /**
+     *
+     * @param btn target button to add pins
+     * @param location {left,right,top,bottom} pins are added to button
+     */
+    private DNDPin generatePin(DNDButton btn, String location){
+        DNDPin.DRAG_DIRECTION  direction = null;
+        ViewGroup.MarginLayoutParams btn_params = getParams(btn);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(pin_width ,pin_height );
+        int btn_width = (int) cell_width * btn.getCellWidthRatio();
+        int btn_height= (int) cell_height * btn.getCellHeightRatio();
+
+        int x_margin = 0, y_margin = 0;
+        switch (location){
+            case "left" :
+                x_margin -= pin_distance;
+                y_margin += (btn_height / 2) - pin_height /2;
+                direction = DNDPin.DRAG_DIRECTION.DRAG_HORIZONAL;
+                break;
+            case "top" :
+                x_margin += (btn_width / 2) - pin_width /2;
+                y_margin -= pin_distance;
+                direction = DNDPin.DRAG_DIRECTION.DRAG_VERTICAL;
+                break;
+            case "right" :
+                x_margin += btn_width;
+                y_margin += (btn_height / 2) - pin_height /2;
+                direction = DNDPin.DRAG_DIRECTION.DRAG_HORIZONAL;
+                break;
+            case "bottom" :
+                x_margin += (btn_width / 2) - pin_width /2;
+                y_margin += btn_height;
+                direction = DNDPin.DRAG_DIRECTION.DRAG_VERTICAL;
+                break;
+
+        }
+        DNDPin pin = new DNDPin(direction,context);
+        pin.setBackgroundColor(Color.RED);
+        int left_margin = btn_params.leftMargin + x_margin;
+        int top_margin = btn_params.topMargin + y_margin;
+        params.setMargins(left_margin,top_margin,0,0);
+        pin.setLayoutParams(params);
+        return pin;
+    }
+
+
 
 
 }

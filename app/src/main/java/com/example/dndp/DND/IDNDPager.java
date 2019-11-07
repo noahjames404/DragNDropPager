@@ -1,5 +1,6 @@
-package com.example.dndp;
+package com.example.dndp.DND;
 
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
@@ -50,4 +51,20 @@ public interface IDNDPager {
     interface ActionEvent {
         void onExecute();
     }
+
+    interface ItemView {
+        /**
+         *
+         * @param pager - use only to validate
+         * @param view - to be customize
+         * @return
+         */
+        View onCustomize(DNDPager pager,View view);
+
+        View onExecute();
+
+        void onResponse(DNDPager.MESSAGE message);
+    }
+
+
 }

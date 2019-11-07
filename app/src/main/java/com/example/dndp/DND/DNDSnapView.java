@@ -1,4 +1,4 @@
-package com.example.dndp;
+package com.example.dndp.DND;
 
 import android.content.Context;
 import android.view.View;
