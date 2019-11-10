@@ -66,5 +66,10 @@ public interface IDNDPager {
         void onResponse(DNDPager.MESSAGE message);
     }
 
+    interface AutoSwipe {
+        void onSwipeLeft();
+        void onSwipeRight();
+    }
+
 
 }
