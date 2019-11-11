@@ -7,11 +7,15 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
+import com.example.dndp.DND.DNDButton;
 import com.example.dndp.DND.IDNDPager;
+
+import java.util.List;
 
 public class FCollectionAdapter extends FragmentStatePagerAdapter {
 
     IDNDPager.AutoSwipe auto_swipe;
+    List<String[]> btn_list;
     public FCollectionAdapter(@NonNull FragmentManager fm, IDNDPager.AutoSwipe auto_swipe) {
         super(fm);
         this.auto_swipe = auto_swipe;

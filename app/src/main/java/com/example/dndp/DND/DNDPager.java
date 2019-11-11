@@ -3,6 +3,7 @@ package com.example.dndp.DND;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.Log;
 import android.view.DragEvent;
@@ -129,17 +130,6 @@ public class DNDPager {
                 cell_width = getCellSize(col_num,width);
 
                 generateSnapGrid();
-                generateButton(2,2,0,0).setBackgroundColor(Color.BLACK);
-//                generateButton(2,2,1,0);
-                generateButton(2,2,2,0);
-                generateButton(2,3,0,3);
-                generateButton(2,3,3,3);
-//                generateButton(1,1,3,0);
-
-//                generateButton(1,1,0,1);
-//                generateButton(1,1,1,1);
-//                generateButton(1,1,2,1);
-                generateButton(1,1,3,1).setBackgroundImage(2, context.getDrawable(R.drawable.dummy_image));
             }
         });
     }
@@ -401,7 +391,7 @@ public class DNDPager {
      * @param x - coordinates in the layout this is base on the snap gridview (the col_num).
      * @param y - coordinates in the layout this is base on the snap gridview (the row_num).
      */
-    public DNDButton generateButton(final int width_ratio,final int height_ratio,final int x,final int y){
+    public DNDButton generateButton(final int width_ratio, final int height_ratio, final int x, final int y, String btn_text, int btnbg_color, Drawable btnbg_image){
         final DNDButton btn = new DNDButton(context);
         final DNDDoubleTap dbtap = new DNDDoubleTap();
 
@@ -468,7 +458,12 @@ public class DNDPager {
         });
 
 
-        btn.setBackgroundColor(Color.GRAY);
+        btn.setText(btn_text);
+        if(btnbg_image != null){
+            btn.setBackgroundImage(5, btnbg_image);
+        }else {
+            btn.setBackgroundColor(btnbg_color);
+        }
         btn.setGroupId(group_id);
         btn.setLastLayout(layout);
         btn.setBorder(5,background_color);
@@ -477,7 +472,6 @@ public class DNDPager {
         btn.setPosition(x,y);
         btn.setLayoutParams(setGridPosition(width_ratio,height_ratio,x,y));
 
-        layout.addView(btn);
         return btn;
     }
 

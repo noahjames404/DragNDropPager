@@ -17,6 +17,9 @@ import com.example.dndp.DND.DNDPager;
 import com.example.dndp.DND.IDNDPager;
 import com.example.dndp.Fragment.FCollectionAdapter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
 
     private String TAG = "MAINACTIVITY";
@@ -81,7 +84,30 @@ public class MainActivity extends AppCompatActivity {
         };
 
 
-
+        String [] btn_arr = {
+            "1","1","hello","#000fff",null,
+            "1","1","hello","#000fff",null,
+            "1","1","hello","#000fff",null,
+            "1","1","hello","#000fff",null,
+            "1","1","hello","#000fff",null,
+            "1","1","hello","#000fff",null,
+            "1","1","hello","#000fff",null,
+            "1","1","hello","#000fff",null,
+            "1","1","hello","#000fff",null,
+            "1","1","hello","#000fff",null,
+            "1","1","hello","#000fff",null,
+            "1","1","hello","#000fff",null,
+            "1","1","hello","#000fff",null,
+            "1","1","hello","#000fff",null,
+            "1","1","hello","#000fff",null,
+            "1","1","hello","#000fff",null,
+            "1","1","hello","#000fff",null,
+            "1","1","hello","#000fff",null,
+            "1","1","hello","#000fff",null,
+            "1","1","hello","#000fff",null,
+            "1","1","hello","#000fff",null,
+            "1","1","hello","#000fff",null
+        };
 
         DNDPager pager = new DNDPager(rl,6,6,group_id,getApplicationContext());
         pager.setBackgroundColor(Color.parseColor("#fff000"));
