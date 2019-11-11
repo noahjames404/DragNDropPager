@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -391,7 +392,7 @@ public class DNDPager {
      * @param x - coordinates in the layout this is base on the snap gridview (the col_num).
      * @param y - coordinates in the layout this is base on the snap gridview (the row_num).
      */
-    public DNDButton generateButton(final int width_ratio, final int height_ratio, final int x, final int y, String btn_text, int btnbg_color, Drawable btnbg_image){
+    public DNDButton generateButton(final int width_ratio, final int height_ratio, final int x, final int y, String btn_text, Drawable btnbg_image, int btnbg_color){
         final DNDButton btn = new DNDButton(context);
         final DNDDoubleTap dbtap = new DNDDoubleTap();
 
@@ -521,7 +522,7 @@ public class DNDPager {
      * @param params - new coordinates & size to validate
      * @return true if it has overlap.
      */
-    private boolean hasOverlapView(ViewGroup.MarginLayoutParams params, DNDButton btn){
+    private boolean hasOverlapView(ViewGroup.MarginLayoutParams params, IDNDPager.Item btn){
 
         Log.d(TAG, "hasOverlapView: shrink size" + shrinkSize(params.leftMargin + cell_width * btn.getCellWidthRatio(),margin_percentage));
         Log.d(TAG, "hasOverlapView: actual size " + params.leftMargin + cell_width * btn.getCellWidthRatio());
@@ -732,6 +733,43 @@ public class DNDPager {
         return pin;
     }
 
+    /**
+     *
+     * @param item to be added.
+     * @return true if item is added in layout else it does not have enough space.
+     */
+    public boolean addButtonToLayout(DNDItem item){
+        if(item.x > -1 && item.y > -1){
+            layout.addView(
+                    generateButton(item.cell_width_ratio,item.cell_height_ratio,item.x,item.y,item.text,item.background_image,item.background_color)
+            );
+            return true;
+        }
+
+
+        for(int y =0; y < row_num; y++){
+            for(int x = 0; x < col_num; x++){
+                DNDButton btn = getButtonByCoordinates(x,y);
+                if(btn != null){
+                    continue;
+                }
+                RelativeLayout.LayoutParams params =  setGridPosition(item.cell_width_ratio,item.cell_height_ratio,x,y);
+                DNDButton temp_btn = new DNDButton(context);
+                temp_btn.setCellWidthRatio(item.cell_width_ratio);
+                temp_btn.setCellHeightRatio(item.cell_height_ratio);
+                if(hasOverlapView(params, temp_btn)){
+                    continue;
+                }
+
+                layout.addView(
+                        generateButton(item.cell_width_ratio,item.cell_height_ratio,x,y,item.text,item.background_image,item.background_color)
+                );
+                return true;
+
+            }
+        }
+        return false;
+    }
 
 
 

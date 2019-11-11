@@ -15,12 +15,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.dndp.DND.DNDButton;
+import com.example.dndp.DND.DNDItem;
 import com.example.dndp.DND.DNDPager;
 import com.example.dndp.DND.IDNDPager;
 import com.example.dndp.FCustomizePanel;
 import com.example.dndp.R;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,11 +30,14 @@ import java.util.Date;
 public class FPage extends Fragment {
 
 
+    List<DNDItem> item_list;
     int swipe_buffer = 500;
     static long recent_swipe = new Date().getTime();
     RelativeLayout rl_grid;
     IDNDPager.AutoSwipe auto_swipe;
     View left_bound, right_bound;
+    DNDPager pager;
+
     public FPage(IDNDPager.AutoSwipe auto_swipe) {
         // Required empty public constructor
         this.auto_swipe = auto_swipe;
@@ -108,12 +113,18 @@ public class FPage extends Fragment {
             }
         });
 
-        DNDPager pager1 = new DNDPager(rl_grid,6,6,"power",getContext());
-        pager1.render();
-        pager1.setEditable(true);
-        pager1.setOnCustomize(event);
-        pager1.setInvalidColor(Color.parseColor("#000fff"));
+        pager = new DNDPager(rl_grid,6,6,"power",getContext());
+        pager.render();
+        pager.setEditable(true);
+        pager.setOnCustomize(event);
+        pager.setInvalidColor(Color.parseColor("#000fff"));
 
 
     }
+
+
+    public void addButtonToLayout(DNDItem item){
+        pager.addButtonToLayout(item);
+    }
+
 }

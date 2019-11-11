@@ -12,6 +12,18 @@ import java.nio.channels.FileChannel;
 
 public class DNDUtils {
 
+    public static final String[][] color_palette = new String[][]{
+            {"GREEN","#2ecc71"},
+            {"BLUE","#3498db"},
+            {"VIOLET","#9b59b6"},
+            {"BLACK","#34495e"},
+            {"YELLOW","#f1c40f"},
+            {"ORANGE","#e67e22"},
+            {"GREEN","#2ecc71"},
+            {"RED","#e74c3c"},
+            {"GREY","#95a5a6"}
+    };
+
     /**
      * Converts a immutable bitmap to a mutable bitmap. This operation doesn't allocates
      * more memory that there is already allocated.

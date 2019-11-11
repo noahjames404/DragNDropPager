@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.example.dndp.DND.DNDButton;
+import com.example.dndp.DND.DNDItem;
 import com.example.dndp.DND.DNDPager;
 import com.example.dndp.DND.IDNDPager;
 import com.example.dndp.Fragment.FCollectionAdapter;
@@ -83,31 +84,23 @@ public class MainActivity extends AppCompatActivity {
 
         };
 
+        List<DNDItem> item_list = new ArrayList<>();
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
 
-        String [] btn_arr = {
-            "1","1","hello","#000fff",null,
-            "1","1","hello","#000fff",null,
-            "1","1","hello","#000fff",null,
-            "1","1","hello","#000fff",null,
-            "1","1","hello","#000fff",null,
-            "1","1","hello","#000fff",null,
-            "1","1","hello","#000fff",null,
-            "1","1","hello","#000fff",null,
-            "1","1","hello","#000fff",null,
-            "1","1","hello","#000fff",null,
-            "1","1","hello","#000fff",null,
-            "1","1","hello","#000fff",null,
-            "1","1","hello","#000fff",null,
-            "1","1","hello","#000fff",null,
-            "1","1","hello","#000fff",null,
-            "1","1","hello","#000fff",null,
-            "1","1","hello","#000fff",null,
-            "1","1","hello","#000fff",null,
-            "1","1","hello","#000fff",null,
-            "1","1","hello","#000fff",null,
-            "1","1","hello","#000fff",null,
-            "1","1","hello","#000fff",null
-        };
+
 
         DNDPager pager = new DNDPager(rl,6,6,group_id,getApplicationContext());
         pager.setBackgroundColor(Color.parseColor("#fff000"));
