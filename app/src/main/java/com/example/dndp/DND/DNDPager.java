@@ -61,9 +61,12 @@ public class DNDPager {
      * The margin in width & height of a button, use for checking the sizes in buttons.
      * a percentage is ignored when an element overlaps another element.
      */
-    private double margin_percentage = 0.00;
+    private double margin_percentage = 0.20;
 
-
+    /**
+     * tables to be added after layout load
+     */
+    private List<DNDItem> list_item = new ArrayList<>();
     /**
      * background color of the layout, since the layout's background color would be override by the grid snap view.
      */
@@ -131,6 +134,12 @@ public class DNDPager {
                 cell_width = getCellSize(col_num,width);
 
                 generateSnapGrid();
+
+//                for(DNDItem item : list_item){
+//
+//                    Log.d(TAG, "onSizeChange: " + item.x + " " + item.y);
+//                }
+
             }
         });
     }
@@ -217,6 +226,7 @@ public class DNDPager {
                                         || vlp.topMargin + cell_point.height > layout_height){
                                     drop_shadow_view.setBackgroundColor(invalid_color);
                                     drop_shadow_view.getBackground().setAlpha(100);
+                                    Log.d(TAG, "onDrag: element overlap ");
                                 }
 
                                 break;
@@ -359,7 +369,7 @@ public class DNDPager {
         @param layout - safely takes the layout size.
         @param callback - called when size changes.
      */
-    private void updateLayoutSize(final RelativeLayout layout, final IDNDPager callback){
+    public void updateLayoutSize(final RelativeLayout layout, final IDNDPager callback){
 
         ViewTreeObserver vto = layout.getViewTreeObserver();
         vto.addOnGlobalLayoutListener (new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -562,7 +572,7 @@ public class DNDPager {
      * @return returns the full size
      */
     private double getButtonFullHeight(DNDButton btn){
-        return getParams(btn).topMargin + cell_height * btn.getCellWidthRatio();
+        return getParams(btn).topMargin + cell_height * btn.getCellHeightRatio();
     }
 
     /**
@@ -739,9 +749,14 @@ public class DNDPager {
      * @return true if item is added in layout else it does not have enough space.
      */
     public boolean addButtonToLayout(DNDItem item){
+
+        if(item.is_added){
+            return true;
+        }
+
         if(item.x > -1 && item.y > -1){
             layout.addView(
-                    generateButton(item.cell_width_ratio,item.cell_height_ratio,item.x,item.y,item.text,item.background_image,item.background_color)
+                    generateButton(item.cell_width_ratio,item.cell_height_ratio,item.x,item.y,item.text,item.background_image,Color.GRAY)
             );
             return true;
         }
@@ -749,6 +764,7 @@ public class DNDPager {
 
         for(int y =0; y < row_num; y++){
             for(int x = 0; x < col_num; x++){
+                Log.d(TAG, "addButtonToLayout: " + item.cell_width_ratio + "-" +item.cell_height_ratio +"-" + x + "-" + y +"-"+item.text+"-" +row_num + " " + col_num +" " + (x < col_num));
                 DNDButton btn = getButtonByCoordinates(x,y);
                 if(btn != null){
                     continue;
@@ -757,19 +773,27 @@ public class DNDPager {
                 DNDButton temp_btn = new DNDButton(context);
                 temp_btn.setCellWidthRatio(item.cell_width_ratio);
                 temp_btn.setCellHeightRatio(item.cell_height_ratio);
+
                 if(hasOverlapView(params, temp_btn)){
                     continue;
                 }
 
+                list_item.add(item);
+                item.x = x;
+                item.y = y;
                 layout.addView(
-                        generateButton(item.cell_width_ratio,item.cell_height_ratio,x,y,item.text,item.background_image,item.background_color)
+                        generateButton(item.cell_width_ratio,item.cell_height_ratio,item.x,item.y,item.text,item.background_image,Color.GRAY)
                 );
-                return true;
 
+                item.is_added = true;
+                Log.d(TAG, "addButtonToLayout: -------------------" + x + " " + y);
+                return true;
             }
         }
         return false;
     }
+
+
 
 
 

@@ -53,8 +53,24 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
+        List<DNDItem> item_list = new ArrayList<>();
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
 
-        adapter = new FCollectionAdapter(getSupportFragmentManager(),auto_swipe);
+
+        adapter = new FCollectionAdapter(getSupportFragmentManager(),item_list,auto_swipe);
         view_pager.setAdapter(adapter);
 
         view_pager.setOffscreenPageLimit(1000);
@@ -84,21 +100,8 @@ public class MainActivity extends AppCompatActivity {
 
         };
 
-        List<DNDItem> item_list = new ArrayList<>();
-        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
-        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
-        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
-        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
-        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
-        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
-        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
-        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
-        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
-        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
-        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
-        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
-        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
-        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+
+
 
 
 
@@ -118,4 +121,6 @@ public class MainActivity extends AppCompatActivity {
     private FragmentTransaction getFragmentTransaction(){
         return getSupportFragmentManager().beginTransaction();
     }
+
+    
 }

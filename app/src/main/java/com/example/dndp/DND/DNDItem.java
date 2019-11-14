@@ -16,6 +16,7 @@ public class DNDItem {
     public Drawable background_image = null;
     public int background_color = Color.parseColor(DNDUtils.color_palette[0][1]);
     public int page_num = -1;
+    public boolean is_added = false;
 
     public DNDItem(){
 

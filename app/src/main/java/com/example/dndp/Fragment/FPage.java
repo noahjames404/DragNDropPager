@@ -37,12 +37,17 @@ public class FPage extends Fragment {
     IDNDPager.AutoSwipe auto_swipe;
     View left_bound, right_bound;
     DNDPager pager;
+    private int page_num = -1;
 
-    public FPage(IDNDPager.AutoSwipe auto_swipe) {
+    public FPage(int page_num, IDNDPager.AutoSwipe auto_swipe) {
         // Required empty public constructor
         this.auto_swipe = auto_swipe;
+        this.page_num = page_num;
     }
 
+    public void setItemList(List<DNDItem> item_list) {
+        this.item_list = item_list;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -86,6 +91,8 @@ public class FPage extends Fragment {
 
             }
 
+
+
         };
 
         left_bound.setOnDragListener(new View.OnDragListener() {
@@ -118,7 +125,16 @@ public class FPage extends Fragment {
         pager.setEditable(true);
         pager.setOnCustomize(event);
         pager.setInvalidColor(Color.parseColor("#000fff"));
-
+        pager.updateLayoutSize(rl_grid, new IDNDPager() {
+            @Override
+            public void onSizeChange(double width, double height) {
+                for(DNDItem item : item_list){
+                    if(pager.addButtonToLayout(item)){
+                        item.page_num =page_num;
+                    }
+                }
+            }
+        });
 
     }
 

@@ -17,19 +17,23 @@ public class FCollectionAdapter extends FragmentStatePagerAdapter {
 
     IDNDPager.AutoSwipe auto_swipe;
     List<DNDItem> item_list;
-    public FCollectionAdapter(@NonNull FragmentManager fm, IDNDPager.AutoSwipe auto_swipe) {
+
+    public FCollectionAdapter(@NonNull FragmentManager fm,List<DNDItem> item_list, IDNDPager.AutoSwipe auto_swipe) {
         super(fm);
         this.auto_swipe = auto_swipe;
+        this.item_list = item_list;
     }
 
     @NonNull
     @Override
     public Fragment getItem(int position) {
-        FPage fragment = new FPage(auto_swipe);
+
+        FPage fragment = new FPage(position,auto_swipe);
         Bundle bundle = new Bundle();
         position++;
         bundle.putString("message","hello from pages : "+ position);
         fragment.setArguments(bundle);
+        fragment.setItemList(item_list);
 
 
         return fragment;
