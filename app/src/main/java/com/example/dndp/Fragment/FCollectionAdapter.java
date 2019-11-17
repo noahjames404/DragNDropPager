@@ -28,7 +28,7 @@ public class FCollectionAdapter extends FragmentStatePagerAdapter {
     int page_count = 1;
     View.OnClickListener btn_listener;
     boolean is_editable = false;
-
+    IDNDPager.ItemView event;
     public FCollectionAdapter(@NonNull FragmentManager fm, List<DNDItem> item_list, IDNDPager.AutoSwipe auto_swipe) {
         super(fm);
         this.auto_swipe = auto_swipe;
@@ -57,6 +57,7 @@ public class FCollectionAdapter extends FragmentStatePagerAdapter {
         Log.d(TAG, "getItem: " + position);
         fragment.setArguments(bundle);
         fragment.setItemList(item_list);
+        fragment.setCustomizeFragment(event);
         fragment.setPostAction(new IDNDPager.ActionEvent() {
             @Override
             public void onExecute() {
@@ -75,6 +76,9 @@ public class FCollectionAdapter extends FragmentStatePagerAdapter {
     }
 
 
+    public void setCustomizeFragment(IDNDPager.ItemView event){
+        this.event = event;
+    }
 
     @Override
     public int getCount() {

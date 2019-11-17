@@ -40,6 +40,7 @@ public class FPage extends Fragment {
     private int page_num = -1;
     private IDNDPager.ActionEvent post_action;
     private IDNDPager.SettingsPreference settingsPreference;
+    private IDNDPager.ItemView event;
     public FPage(int page_num, IDNDPager.AutoSwipe auto_swipe, IDNDPager.SettingsPreference settingsPreference) {
         // Required empty public constructor
         this.auto_swipe = auto_swipe;
@@ -49,6 +50,10 @@ public class FPage extends Fragment {
 
     public DNDPager getPager(){
         return pager;
+    }
+
+    public void setCustomizeFragment(IDNDPager.ItemView event){
+        this.event = event;
     }
 
 
@@ -76,18 +81,7 @@ public class FPage extends Fragment {
 
     private void init(){
 
-        IDNDPager.ItemView event = new IDNDPager.ItemView() {
-            @Override
-            public View onCustomize(DNDPager pager, View view) {
-                DNDButton btn = (DNDButton) view;
-                FCustomizePanel
-                        .getInstance(btn)
-                        .show(getActivity().getSupportFragmentManager(),"ewqewq");
 
-                Log.d("power", "onCustomize: " + pager.getInvalidColor());
-                return null;
-            }
-        };
 
         left_bound.setOnDragListener(new View.OnDragListener() {
             @Override
@@ -120,6 +114,20 @@ public class FPage extends Fragment {
         pager.setPageNum(page_num);
         pager.render();
         pager.setIsEditable(settingsPreference);
+        if(event == null){
+            IDNDPager.ItemView event = new IDNDPager.ItemView() {
+                @Override
+                public View onCustomize(DNDPager pager, View view) {
+                    DNDButton btn = (DNDButton) view;
+                    FCustomizePanel
+                            .getInstance(btn)
+                            .show(getActivity().getSupportFragmentManager(),"ewqewq");
+
+                    Log.d("power", "onCustomize: " + pager.getInvalidColor());
+                    return null;
+                }
+            };
+        }
         pager.setOnCustomize(event);
         pager.setInvalidColor(Color.parseColor("#000fff"));
         pager.updateLayoutSize(rl_grid, new IDNDPager() {
