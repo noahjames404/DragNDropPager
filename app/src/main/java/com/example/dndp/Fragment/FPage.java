@@ -38,12 +38,20 @@ public class FPage extends Fragment {
     View left_bound, right_bound;
     DNDPager pager;
     private int page_num = -1;
-
-    public FPage(int page_num, IDNDPager.AutoSwipe auto_swipe) {
+    private IDNDPager.ActionEvent post_action;
+    private IDNDPager.SettingsPreference settingsPreference;
+    public FPage(int page_num, IDNDPager.AutoSwipe auto_swipe, IDNDPager.SettingsPreference settingsPreference) {
         // Required empty public constructor
         this.auto_swipe = auto_swipe;
         this.page_num = page_num;
+        this.settingsPreference = settingsPreference;
     }
+
+    public DNDPager getPager(){
+        return pager;
+    }
+
+
 
     public void setItemList(List<DNDItem> item_list) {
         this.item_list = item_list;
@@ -60,39 +68,25 @@ public class FPage extends Fragment {
 
         String message = getArguments().getString("message");
 
+        init();
 
         return view;
     }
 
 
-    @Override
-    public void onStart() {
-        super.onStart();
+    private void init(){
 
         IDNDPager.ItemView event = new IDNDPager.ItemView() {
             @Override
             public View onCustomize(DNDPager pager, View view) {
                 DNDButton btn = (DNDButton) view;
                 FCustomizePanel
-                        .getInstance(pager,btn)
+                        .getInstance(btn)
                         .show(getActivity().getSupportFragmentManager(),"ewqewq");
 
                 Log.d("power", "onCustomize: " + pager.getInvalidColor());
                 return null;
             }
-
-            @Override
-            public View onExecute() {
-                return null;
-            }
-
-            @Override
-            public void onResponse(DNDPager.MESSAGE message) {
-
-            }
-
-
-
         };
 
         left_bound.setOnDragListener(new View.OnDragListener() {
@@ -120,27 +114,37 @@ public class FPage extends Fragment {
             }
         });
 
+
+
         pager = new DNDPager(rl_grid,6,6,"power",getContext());
+        pager.setPageNum(page_num);
         pager.render();
-        pager.setEditable(true);
+        pager.setIsEditable(settingsPreference);
         pager.setOnCustomize(event);
         pager.setInvalidColor(Color.parseColor("#000fff"));
         pager.updateLayoutSize(rl_grid, new IDNDPager() {
             @Override
             public void onSizeChange(double width, double height) {
                 for(DNDItem item : item_list){
-                    if(pager.addButtonToLayout(item)){
-                        item.page_num =page_num;
-                    }
+                    pager.addButtonToLayout(item, page_num);
+                }
+                if(post_action != null){
+                    post_action.onExecute();
                 }
             }
         });
+    }
+    public void addButtonToLayout(DNDItem item, int page_num){
+        pager.addButtonToLayout(item,page_num);
+    }
 
+    public void setPostAction(IDNDPager.ActionEvent post_action){
+        this.post_action = post_action;
     }
 
 
-    public void addButtonToLayout(DNDItem item){
-        pager.addButtonToLayout(item);
-    }
+
+
+
 
 }

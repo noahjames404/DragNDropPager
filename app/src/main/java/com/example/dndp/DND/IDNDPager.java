@@ -32,9 +32,9 @@ public interface IDNDPager {
 
         void setCellHeightRatio(int cell_height);
 
-        void setLastLayout(RelativeLayout layout);
+        void setLastPager(DNDPager layout);
 
-        RelativeLayout getLastLayout();
+        DNDPager getLastPager();
 
         String getGroupId();
 
@@ -60,16 +60,18 @@ public interface IDNDPager {
          * @return
          */
         View onCustomize(DNDPager pager,View view);
-
-        View onExecute();
-
-        void onResponse(DNDPager.MESSAGE message);
     }
 
     interface AutoSwipe {
         void onSwipeLeft();
         void onSwipeRight();
     }
+
+    interface SettingsPreference {
+        boolean isEditable();
+    }
+
+
 
 
 }

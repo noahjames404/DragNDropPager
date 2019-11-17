@@ -32,10 +32,10 @@ public class FCustomizePanel extends DialogFragment {
     /**
      * used for validating the bounds of a layout.
      */
-    public static FCustomizePanel getInstance(DNDPager pager, DNDButton btn){
+    public static FCustomizePanel getInstance( DNDButton btn){
         FCustomizePanel fragment = new FCustomizePanel();
         fragment.btn = btn;
-        fragment.pager = pager;
+        fragment.pager = btn.getLastPager();
         return fragment;
     }
 

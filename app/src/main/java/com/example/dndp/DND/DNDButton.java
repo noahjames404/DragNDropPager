@@ -17,13 +17,15 @@ public class DNDButton extends Button implements IDNDPager.Item, IDNDPager.ItemE
 
     private String group_id;
 
-    private RelativeLayout layout;
+    private DNDPager pager;
 
     private GradientDrawable gradient_drawable;
 
     private int color;
 
     private int x,y;
+
+    private Drawable bg_image = null;
 
     public DNDButton(Context context) {
         super(context);
@@ -46,12 +48,12 @@ public class DNDButton extends Button implements IDNDPager.Item, IDNDPager.ItemE
         this.cell_height = cell_height;
     }
 
-    public void setLastLayout(RelativeLayout layout){
-        this.layout = layout;
+    public void setLastPager(DNDPager pager){
+        this.pager = pager;
     }
 
-    public RelativeLayout getLastLayout(){
-        return layout;
+    public DNDPager getLastPager(){
+        return pager;
     }
 
     public String getGroupId() {
@@ -96,7 +98,12 @@ public class DNDButton extends Button implements IDNDPager.Item, IDNDPager.ItemE
         frame.setColor(0x000000ff);
         Drawable[] layers = {image,frame};
         LayerDrawable result = new LayerDrawable(layers);
+        bg_image = image;
         setBackground(result);
+    }
+
+    public Drawable getBackgroundImage(){
+        return bg_image;
     }
 
     @Override

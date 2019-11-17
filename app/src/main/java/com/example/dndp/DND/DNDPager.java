@@ -11,11 +11,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-
-import com.example.dndp.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +22,8 @@ public class DNDPager {
 
     public static final String TAG ="DNDPager";
     Context context;
+
+    private View.OnClickListener btn_listener;
     /**
      * The number of rows & columns from each page to support.
      * When using multiple DNDPager with the same group id, ensure that
@@ -61,7 +60,7 @@ public class DNDPager {
      * The margin in width & height of a button, use for checking the sizes in buttons.
      * a percentage is ignored when an element overlaps another element.
      */
-    private double margin_percentage = 0.20;
+    private double margin_percentage = 0.00;
 
     /**
      * tables to be added after layout load
@@ -121,6 +120,13 @@ public class DNDPager {
 
         instance = this;
     }
+
+    private IDNDPager.SettingsPreference settingsPreference;
+
+    /**
+     * page number, -1 is not assigned.
+     */
+    private int page_num = -1;
     /**
      * Changes are applied and start to load the views.
      */
@@ -173,7 +179,7 @@ public class DNDPager {
                 snap_view.setOnDragListener(new View.OnDragListener() {
                     @Override
                     public boolean onDrag(View view, DragEvent dragEvent) {
-                        if(!editable){
+                        if(!settingsPreference.isEditable()){
                             return false;
                         }
                         /**
@@ -295,15 +301,15 @@ public class DNDPager {
                                          * When both parties are in different layouts,
                                          * they switch layouts.
                                          */
-                                        if(btn.getLastLayout() != layout) {
+                                        if(btn.getLastPager().layout != layout) {
                                             //view a
                                             layout.removeView(current_cell);
-                                            btn.getLastLayout().addView(current_cell);
-                                            current_cell.setLastLayout(btn.getLastLayout());
+                                            btn.getLastPager().layout.addView(current_cell);
+                                            current_cell.setLastPager(btn.getLastPager());
                                             //view b
-                                            btn.getLastLayout().removeView(btn);
+                                            btn.getLastPager().layout.removeView(btn);
                                             layout.addView(btn);
-                                            btn.setLastLayout(layout);
+                                            btn.setLastPager(instance);
 
                                         }
                                         /**
@@ -327,9 +333,9 @@ public class DNDPager {
                                     /**
                                      * when the unoccupied cell is located in foreign layout it is transfer to that layout.
                                      */
-                                    if(btn.getLastLayout() != layout){
-                                        btn.getLastLayout().removeView(current_drag_view );
-                                        btn.setLastLayout(layout);
+                                    if(btn.getLastPager().layout != layout){
+                                        btn.getLastPager().layout.removeView(current_drag_view );
+                                        btn.setLastPager(instance);
                                         layout.addView(btn);
 
                                     }
@@ -410,7 +416,7 @@ public class DNDPager {
         btn.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(final View v, MotionEvent me) {
-                if(!editable){
+                if(!settingsPreference.isEditable()){
                     return false;
                 }
                 View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(btn);
@@ -433,10 +439,10 @@ public class DNDPager {
 //                                pin_right = generatePin(btn,"right");
 //                                pin_bottom = generatePin(btn,"bottom");
 //
-//                                btn.getLastLayout().addView(pin_top);
-//                                btn.getLastLayout().addView(pin_left);
-//                                btn.getLastLayout().addView(pin_right);
-//                                btn.getLastLayout().addView(pin_bottom);
+//                                btn.getLastPager().addView(pin_top);
+//                                btn.getLastPager().addView(pin_left);
+//                                btn.getLastPager().addView(pin_right);
+//                                btn.getLastPager().addView(pin_bottom);
                             }else {
                                 Log.d(TAG, "onExecute: no active onCustomize listener");
                             }
@@ -462,8 +468,11 @@ public class DNDPager {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!editable){
+                if(!settingsPreference.isEditable()){
                     Toast.makeText(context,"hello",Toast.LENGTH_SHORT).show();
+                    if(btn_listener != null){
+                        btn_listener.onClick(view);
+                    }
                 }
             }
         });
@@ -476,7 +485,7 @@ public class DNDPager {
             btn.setBackgroundColor(btnbg_color);
         }
         btn.setGroupId(group_id);
-        btn.setLastLayout(layout);
+        btn.setLastPager(instance);
         btn.setBorder(5,background_color);
         btn.setCellWidthRatio(width_ratio);
         btn.setCellHeightRatio(height_ratio);
@@ -484,6 +493,11 @@ public class DNDPager {
         btn.setLayoutParams(setGridPosition(width_ratio,height_ratio,x,y));
 
         return btn;
+    }
+
+
+    public void setOnClickBtnListener(View.OnClickListener btn_listener){
+        this.btn_listener = btn_listener;
     }
 
     /**
@@ -536,6 +550,7 @@ public class DNDPager {
 
         Log.d(TAG, "hasOverlapView: shrink size" + shrinkSize(params.leftMargin + cell_width * btn.getCellWidthRatio(),margin_percentage));
         Log.d(TAG, "hasOverlapView: actual size " + params.leftMargin + cell_width * btn.getCellWidthRatio());
+        Log.d(TAG, "hasOverlapView:btn count " + getButtons().size());
        for(DNDButton b : getButtons()){
             if(     b != btn &&
                     expandSize(getParams(b).leftMargin,margin_percentage)< params.leftMargin + cell_width * btn.getCellWidthRatio()
@@ -658,14 +673,6 @@ public class DNDPager {
         return null;
     }
 
-    public boolean isEditable() {
-        return editable;
-    }
-
-    public void setEditable(boolean editable) {
-        this.editable = editable;
-    }
-
     public int getInvalidColor() {
         return invalid_color;
     }
@@ -748,16 +755,21 @@ public class DNDPager {
      * @param item to be added.
      * @return true if item is added in layout else it does not have enough space.
      */
-    public boolean addButtonToLayout(DNDItem item){
+    public boolean addButtonToLayout(DNDItem item,int page_num){
 
         if(item.is_added){
             return true;
         }
 
+        if( item.page_num != -1 && page_num != item.page_num) {
+            return false;
+        }
         if(item.x > -1 && item.y > -1){
+            item.btn = generateButton(item.cell_width_ratio,item.cell_height_ratio,item.x,item.y,item.text,item.background_image,Color.GRAY);
             layout.addView(
-                    generateButton(item.cell_width_ratio,item.cell_height_ratio,item.x,item.y,item.text,item.background_image,Color.GRAY)
+                    item.btn
             );
+            item.is_added = true;
             return true;
         }
 
@@ -781,20 +793,30 @@ public class DNDPager {
                 list_item.add(item);
                 item.x = x;
                 item.y = y;
+                item.btn = generateButton(item.cell_width_ratio,item.cell_height_ratio,item.x,item.y,item.text,item.background_image,Color.GRAY);
                 layout.addView(
-                        generateButton(item.cell_width_ratio,item.cell_height_ratio,item.x,item.y,item.text,item.background_image,Color.GRAY)
+                        item.btn
                 );
-
+                item.page_num = page_num;
                 item.is_added = true;
-                Log.d(TAG, "addButtonToLayout: -------------------" + x + " " + y);
+                Log.d(TAG, "addButtonToLayout: -------------------" + x + " " + y + " " );
                 return true;
             }
         }
         return false;
     }
 
+    public void setIsEditable(IDNDPager.SettingsPreference settingsPreference){
+        this.settingsPreference =settingsPreference;
+    }
 
 
 
+    public int getPageNum() {
+        return page_num;
+    }
 
+    public void setPageNum(int page_num) {
+        this.page_num = page_num;
+    }
 }

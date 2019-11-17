@@ -20,20 +20,20 @@ import com.example.dndp.Fragment.FCollectionAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
 
     private String TAG = "MAINACTIVITY";
     private ViewPager view_pager;
     private FCollectionAdapter adapter;
-    RelativeLayout rl,rl_1;
+    final List<DNDItem> item_list = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        rl = findViewById(R.id.rl);
-        rl_1 = findViewById(R.id.rl_1);
         String group_id = "power";
 
         view_pager = findViewById(R.id.view_pager);
@@ -50,10 +50,14 @@ public class MainActivity extends AppCompatActivity {
             public void onSwipeRight() {
                 Log.d(TAG, "onSwipeRight: ");
                 view_pager.setCurrentItem(view_pager.getCurrentItem() + 1, true);
+
             }
         };
 
-        List<DNDItem> item_list = new ArrayList<>();
+
+        item_list.add(new DNDItem("hello",2,2,1,1,null,Color.parseColor("#000fff"),1));
+        item_list.add(new DNDItem("hello",2,2,2,3,null,Color.parseColor("#000fff"),-1));
+        item_list.add(new DNDItem("hello",2,2,2,3,null,Color.parseColor("#000fff"),-1));
         item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
         item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
         item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
@@ -68,6 +72,33 @@ public class MainActivity extends AppCompatActivity {
         item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
         item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
         item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+        item_list.add(new DNDItem("hello",null,Color.parseColor("#000fff")));
+
 
 
         adapter = new FCollectionAdapter(getSupportFragmentManager(),item_list,auto_swipe);
@@ -75,52 +106,21 @@ public class MainActivity extends AppCompatActivity {
 
         view_pager.setOffscreenPageLimit(1000);
 
-
-        IDNDPager.ItemView event = new IDNDPager.ItemView() {
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
             @Override
-            public View onCustomize(DNDPager pager, View view) {
-                DNDButton btn = (DNDButton) view;
-                FCustomizePanel
-                        .getInstance(pager,btn)
-                        .show(getFragmentTransaction(),"ewqewq");
-
-                Log.d("power", "onCustomize: " + pager.getInvalidColor());
-                return null;
+            public void run() {
+                adapter.setEditable(true);
             }
+        },10000);
 
-            @Override
-            public View onExecute() {
-                return null;
-            }
-
-            @Override
-            public void onResponse(DNDPager.MESSAGE message) {
-
-            }
-
-        };
-
-
-
-
-
-
-        DNDPager pager = new DNDPager(rl,6,6,group_id,getApplicationContext());
-        pager.setBackgroundColor(Color.parseColor("#fff000"));
-        pager.render();
-        pager.setEditable(true);
-        pager.setOnCustomize(event);
-
-        DNDPager pager1 = new DNDPager(rl_1,6,6,group_id,getApplicationContext());
-        pager1.render();
-        pager1.setEditable(true);
-        pager1.setOnCustomize(event);
-        pager1.setInvalidColor(Color.parseColor("#000fff"));
     }
 
     private FragmentTransaction getFragmentTransaction(){
         return getSupportFragmentManager().beginTransaction();
     }
+
+
 
     
 }
