@@ -1,4 +1,4 @@
-package com.example.dragndroppager.DND;
+package com.example.dndp.DND;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

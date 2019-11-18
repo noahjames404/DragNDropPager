@@ -1,4 +1,4 @@
-package com.example.dragndroppager.Fragment;
+package com.example.dndp.Fragment;
 
 
 import android.graphics.Color;
@@ -12,12 +12,12 @@ import android.widget.RelativeLayout;
 
 import androidx.fragment.app.Fragment;
 
-import com.example.dragndroppager.DND.DNDButton;
-import com.example.dragndroppager.DND.DNDItem;
-import com.example.dragndroppager.DND.DNDPager;
-import com.example.dragndroppager.DND.IDNDPager;
-import com.example.dragndroppager.FCustomizePanel;
-import com.example.dragndroppager.R;
+import com.example.dndp.DND.DNDButton;
+import com.example.dndp.DND.DNDItem;
+import com.example.dndp.DND.DNDPager;
+import com.example.dndp.DND.IDNDPager;
+import com.example.dndp.FCustomizePanel;
+import com.example.dndp.R;
 
 import java.util.Date;
 import java.util.List;

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.dragndroppager.Fragment.FPage"
+    tools:context="com.example.dndp.Fragment.FPage"
     android:orientation="horizontal">
 
     <!-- TODO: Update blank fragment layout -->

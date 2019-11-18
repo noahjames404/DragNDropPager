@@ -1,4 +1,4 @@
-package com.example.dragndroppager.DND;
+package com.example.dndp.DND;
 
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;

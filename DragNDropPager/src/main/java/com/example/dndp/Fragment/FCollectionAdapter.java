@@ -1,4 +1,4 @@
-package com.example.dragndroppager.Fragment;
+package com.example.dndp.Fragment;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -9,8 +9,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
-import com.example.dragndroppager.DND.DNDItem;
-import com.example.dragndroppager.DND.IDNDPager;
+import com.example.dndp.DND.DNDItem;
+import com.example.dndp.DND.IDNDPager;
 
 import java.util.List;
 

@@ -1,7 +1,8 @@
-package com.example.dragndroppager;
+package com.example.dndp;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,9 +16,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import com.example.dragndroppager.DND.DNDButton;
-import com.example.dragndroppager.DND.DNDPager;
-import com.example.dragndroppager.DND.DNDUtils;
+import com.example.dndp.DND.DNDButton;
+import com.example.dndp.DND.DNDPager;
+import com.example.dndp.DND.DNDPager.MESSAGE;
+import com.example.dndp.DND.DNDUtils;
+
+import static com.example.dndp.DND.DNDPager.MESSAGE.OUT_OF_BOUNDS;
+import static com.example.dndp.DND.DNDPager.MESSAGE.OVERLAPPED;
+import static com.example.dndp.DND.DNDPager.MESSAGE.SAVED;
 
 public class FCustomizePanel extends DialogFragment {
 
