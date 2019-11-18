@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Customize Item"
+        android:textAlignment="center"
+        android:textColor="@color/primaryFont"
+        android:textSize="50dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:gravity=""
+            android:textColor="@color/primaryFont"
+            android:layout_weight="1"
+            android:textSize="20dp"
+            android:text="Text" />
+
+        <EditText
+            android:id="@+id/et_text"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:ems="10"
+            android:inputType="number"
+            android:text="" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:gravity=""
+            android:textColor="@color/primaryFont"
+            android:layout_weight="1"
+            android:textSize="20dp"
+            android:text="Color" />
+
+        <Spinner
+            android:id="@+id/spinner_color_palette"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="match_parent"></Spinner>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:gravity=""
+            android:textColor="@color/primaryFont"
+            android:layout_weight="1"
+            android:textSize="20dp"
+            android:text="Image" />
+
+        <EditText
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:id="@+id/et_image"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.5"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="" />
+        <Button
+            android:id="@+id/btn_browse"
+            android:layout_weight="0.5"
+            android:text="browse"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:gravity=""
+            android:textColor="@color/primaryFont"
+            android:layout_weight="1"
+            android:textSize="20dp"
+            android:text="Height" />
+
+        <EditText
+            android:id="@+id/et_height"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:ems="10"
+            android:inputType="number"
+            android:text="" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:gravity=""
+            android:textColor="@color/primaryFont"
+            android:layout_weight="1"
+            android:textSize="20dp"
+            android:text="Width" />
+
+        <EditText
+            android:id="@+id/et_width"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:ems="10"
+            android:inputType="number"
+            android:text="" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_confirm"
+        android:text="CONFIRM"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>
