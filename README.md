@@ -69,17 +69,18 @@ The **DNDPager** class is the core of the library, this is responsbile for manag
  
  
  **void setBackgroundColor(int color)** - must be applied before ```render()```
+ 
  Data Type | Name | Description
  ----------|------|------------
  int | color | modifies the layout's background color
  
- ** List<DNDButton> getButtons() ** - takes all buttons inside the layout
+ **List<DNDButton> getButtons() ** - takes all buttons inside the layout
  
  Data Type | Name | Description
  ----------|------|------------
  **List<DNDButton>** | **RETURNS** | **a list of buttons from the layout**
  
- ** List<DNDSnapView> getSnapViews()** - takes all SnapView inside the layout, SnapViews are listeners that specifies where to designate a dragable view, forming a grid like formation.
+ **List<DNDSnapView> getSnapViews()** - takes all SnapView inside the layout, SnapViews are listeners that specifies where to designate a dragable view, forming a grid like formation.
  
  Data Type | Name | Description
  ----------|------|------------
