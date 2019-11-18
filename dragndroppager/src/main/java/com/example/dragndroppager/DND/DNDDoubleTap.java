@@ -1,4 +1,4 @@
-package com.example.dndp.DND;
+package com.example.dragndroppager.DND;
 
 import android.util.Log;
 

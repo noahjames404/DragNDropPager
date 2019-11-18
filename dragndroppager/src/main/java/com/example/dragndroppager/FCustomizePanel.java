@@ -1,4 +1,4 @@
-package com.example.dndp;
+package com.example.dragndroppager;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -15,9 +15,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import com.example.dndp.DND.DNDButton;
-import com.example.dndp.DND.DNDPager;
-import com.example.dndp.DND.DNDUtils;
+import com.example.dragndroppager.DND.DNDButton;
+import com.example.dragndroppager.DND.DNDPager;
+import com.example.dragndroppager.DND.DNDUtils;
 
 public class FCustomizePanel extends DialogFragment {
 

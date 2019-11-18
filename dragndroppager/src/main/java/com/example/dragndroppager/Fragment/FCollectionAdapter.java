@@ -1,6 +1,5 @@
-package com.example.dndp.Fragment;
+package com.example.dragndroppager.Fragment;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,15 +9,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
-import com.example.dndp.DND.DNDButton;
-import com.example.dndp.DND.DNDItem;
-import com.example.dndp.DND.IDNDPager;
+import com.example.dragndroppager.DND.DNDItem;
+import com.example.dragndroppager.DND.IDNDPager;
 
-import java.sql.Time;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class FCollectionAdapter extends FragmentStatePagerAdapter {
 

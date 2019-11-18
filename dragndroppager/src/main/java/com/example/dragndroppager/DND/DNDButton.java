@@ -1,4 +1,4 @@
-package com.example.dndp.DND;
+package com.example.dragndroppager.DND;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -7,7 +7,6 @@ import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.widget.Button;
-import android.widget.RelativeLayout;
 
 import androidx.annotation.RequiresApi;
 @SuppressLint("AppCompatCustomView")

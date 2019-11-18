@@ -1,8 +1,6 @@
-package com.example.dndp.DND;
+package com.example.dragndroppager.DND;
 
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 
 public interface IDNDPager {
     void onSizeChange(double width, double height);
