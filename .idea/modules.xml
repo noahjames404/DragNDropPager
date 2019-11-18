@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/DragNDropPager/DragNDropPager-DragNDropPager.iml" filepath="$PROJECT_DIR$/DragNDropPager/DragNDropPager-DragNDropPager.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dragndroppager/dragndroppager.iml" filepath="$PROJECT_DIR$/dragndroppager/dragndroppager.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mema projects-DragNDropPager.iml" filepath="$PROJECT_DIR$/mema projects-DragNDropPager.iml" />
+    </modules>
+  </component>
+</project>
