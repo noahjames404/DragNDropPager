@@ -74,7 +74,7 @@ The **DNDPager** class is the core of the library, this is responsbile for manag
  ----------|------|------------
  int | color | modifies the layout's background color
  
- **List<DNDButton> getButtons() ** - takes all buttons inside the layout
+ **List<DNDButton> getButtons()** - takes all buttons inside the layout
  
  Data Type | Name | Description
  ----------|------|------------
