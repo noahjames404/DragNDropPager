@@ -147,10 +147,4 @@ public class FPage extends Fragment {
     public void setPostAction(IDNDPager.ActionEvent post_action){
         this.post_action = post_action;
     }
-
-
-
-
-
-
 }

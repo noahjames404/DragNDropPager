@@ -121,7 +121,12 @@ public class DNDPager {
         instance = this;
     }
 
-    private IDNDPager.SettingsPreference settingsPreference;
+    private IDNDPager.SettingsPreference settingsPreference = new IDNDPager.SettingsPreference() {
+        @Override
+        public boolean isEditable() {
+            return false;
+        }
+    };
 
     /**
      * page number, -1 is not assigned.
@@ -140,12 +145,21 @@ public class DNDPager {
                 cell_width = getCellSize(col_num,width);
 
                 generateSnapGrid();
+            }
+        });
+    }
 
-//                for(DNDItem item : list_item){
-//
-//                    Log.d(TAG, "onSizeChange: " + item.x + " " + item.y);
-//                }
+    public void render(final IDNDPager.ActionEvent post_render){
+        updateLayoutSize(layout, new IDNDPager() {
+            @Override
+            public void onSizeChange(double width, double height) {
+                layout_height = height;
+                layout_width = width;
+                cell_height = getCellSize(row_num,height);
+                cell_width = getCellSize(col_num,width);
 
+                generateSnapGrid();
+                post_render.onExecute();
             }
         });
     }
@@ -701,8 +715,6 @@ public class DNDPager {
         else {
             return MESSAGE.SAVED;
         }
-
-
     }
 
     /**
@@ -750,6 +762,12 @@ public class DNDPager {
         return pin;
     }
 
+    public void addButtonToLayout(List<DNDItem> items, int page_num){
+        for(DNDItem item : items){
+            addButtonToLayout(item,page_num);
+        }
+    }
+
     /**
      *
      * @param item to be added.
@@ -765,7 +783,7 @@ public class DNDPager {
             return false;
         }
         if(item.x > -1 && item.y > -1){
-            item.btn = generateButton(item.cell_width_ratio,item.cell_height_ratio,item.x,item.y,item.text,item.background_image,Color.GRAY);
+            item.btn = generateButton(item.cell_width_ratio,item.cell_height_ratio,item.x,item.y,item.text,item.background_image,item.background_color);
             layout.addView(
                     item.btn
             );
@@ -793,7 +811,7 @@ public class DNDPager {
                 list_item.add(item);
                 item.x = x;
                 item.y = y;
-                item.btn = generateButton(item.cell_width_ratio,item.cell_height_ratio,item.x,item.y,item.text,item.background_image,Color.GRAY);
+                item.btn = generateButton(item.cell_width_ratio,item.cell_height_ratio,item.x,item.y,item.text,item.background_image,item.background_color);
                 layout.addView(
                         item.btn
                 );
@@ -808,6 +826,15 @@ public class DNDPager {
 
     public void setIsEditable(IDNDPager.SettingsPreference settingsPreference){
         this.settingsPreference =settingsPreference;
+    }
+
+    public void setIsEditable(final boolean editable){
+        this.settingsPreference = new IDNDPager.SettingsPreference() {
+            @Override
+            public boolean isEditable() {
+                return editable;
+            }
+        };
     }
 
 
