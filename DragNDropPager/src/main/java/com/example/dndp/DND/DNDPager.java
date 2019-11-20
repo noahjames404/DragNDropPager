@@ -422,10 +422,13 @@ public class DNDPager {
      * @param x - coordinates in the layout this is base on the snap gridview (the col_num).
      * @param y - coordinates in the layout this is base on the snap gridview (the row_num).
      */
-    public DNDButton generateButton(final int width_ratio, final int height_ratio, final int x, final int y, String btn_text, Drawable btnbg_image, int btnbg_color){
+    public DNDButton generateButton(final int width_ratio, final int height_ratio, final int x, final int y, String btn_text, Drawable btnbg_image, int btnbg_color, String tag){
         final DNDButton btn = new DNDButton(context);
         final DNDDoubleTap dbtap = new DNDDoubleTap();
 
+        if(!tag.equals("")){
+            btn.setTag(tag);
+        }
 
         btn.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -509,7 +512,10 @@ public class DNDPager {
         return btn;
     }
 
-
+    /**
+     *set the default listener for all interactive views
+     * @param btn_listener - callback, to distinguish views from one another add tags on DNDItem.
+     */
     public void setOnClickBtnListener(View.OnClickListener btn_listener){
         this.btn_listener = btn_listener;
     }
@@ -783,7 +789,7 @@ public class DNDPager {
             return false;
         }
         if(item.x > -1 && item.y > -1){
-            item.btn = generateButton(item.cell_width_ratio,item.cell_height_ratio,item.x,item.y,item.text,item.background_image,item.background_color);
+            item.btn = generateButton(item.cell_width_ratio,item.cell_height_ratio,item.x,item.y,item.text,item.background_image,item.background_color,item.tag);
             layout.addView(
                     item.btn
             );
@@ -811,7 +817,7 @@ public class DNDPager {
                 list_item.add(item);
                 item.x = x;
                 item.y = y;
-                item.btn = generateButton(item.cell_width_ratio,item.cell_height_ratio,item.x,item.y,item.text,item.background_image,item.background_color);
+                item.btn = generateButton(item.cell_width_ratio,item.cell_height_ratio,item.x,item.y,item.text,item.background_image,item.background_color,item.tag);
                 layout.addView(
                         item.btn
                 );
