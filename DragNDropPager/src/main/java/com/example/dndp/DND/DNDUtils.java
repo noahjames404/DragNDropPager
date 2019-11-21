@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.List;
 
 public class DNDUtils {
 
@@ -23,6 +24,17 @@ public class DNDUtils {
             {"RED","#e74c3c"},
             {"GREY","#95a5a6"}
     };
+
+
+    /**
+     * updates the is_added properties to false
+     * @param item
+     */
+    public static void resetItems(List<DNDItem> item){
+        for(DNDItem i : item){
+            i.is_added = false;
+        }
+    }
 
     /**
      * Converts a immutable bitmap to a mutable bitmap. This operation doesn't allocates

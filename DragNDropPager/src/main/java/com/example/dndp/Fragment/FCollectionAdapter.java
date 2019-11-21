@@ -92,8 +92,7 @@ public class FCollectionAdapter extends FragmentStatePagerAdapter {
         notifyDataSetChanged();
     }
 
-
-    void hasRemainingItems(){
+    private void hasRemainingItems(){
         for(DNDItem item : item_list){
             if(!item.is_added){
                 setCount(getCount()+1);

@@ -828,10 +828,18 @@ public class DNDPager {
         return false;
     }
 
+    /**
+     * Callback used for advance validations
+     * @param settingsPreference
+     */
     public void setIsEditable(IDNDPager.SettingsPreference settingsPreference){
         this.settingsPreference =settingsPreference;
     }
 
+    /**
+     * directly change the editable
+     * @param editable
+     */
     public void setIsEditable(final boolean editable){
         this.settingsPreference = new IDNDPager.SettingsPreference() {
             @Override
@@ -841,12 +849,48 @@ public class DNDPager {
         };
     }
 
+    /**
+     * remove all buttons inside the layout
+     */
+    public void clearInteractiveViews(){
+        for(DNDButton btn : getButtons()){
+            layout.removeView(btn);
+        }
+    }
+
+    /**
+     * reset is_added from true to false, applied to all items
+     * @param item_list
+     */
+    public void clearCache(List<DNDItem> item_list){
+        DNDUtils.resetItems(item_list);
+    }
+
+    /**
+     * update the items inside the layout
+     * @param list_item
+     * @param page_num
+     */
+    public void updateButtons(List<DNDItem> list_item,int page_num){
+        clearCache(list_item);
+        clearInteractiveViews();
+        addButtonToLayout(list_item,page_num);
+    }
 
 
+    /**
+     * get the current page number
+     * @return
+     */
     public int getPageNum() {
         return page_num;
     }
 
+
+    /**
+     * set the page number, this must be unique if applied in a group_id
+     * @return
+     */
     public void setPageNum(int page_num) {
         this.page_num = page_num;
     }
