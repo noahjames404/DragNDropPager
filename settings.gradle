@@ -1,2 +1,2 @@
-include ':DragNDropPager'
+include ':DragNDropPager', ':myapplication'
 include ':Library'

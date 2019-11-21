@@ -27,7 +27,7 @@ import java.util.List;
  */
 public class FPage extends Fragment {
 
-
+    public static final String TAG = "FPAGE";
     List<DNDItem> item_list;
     int swipe_buffer = 500;
     static long recent_swipe = new Date().getTime();
@@ -40,11 +40,14 @@ public class FPage extends Fragment {
     private IDNDPager.SettingsPreference settingsPreference;
     private IDNDPager.ItemView event = null;
     private String group_id = "";
-    public FPage(int page_num, IDNDPager.AutoSwipe auto_swipe, String group_id, IDNDPager.SettingsPreference settingsPreference) {
+    private int row_num = -1, col_num = -1;
+    public FPage(int page_num, IDNDPager.AutoSwipe auto_swipe,int row_num, int col_num, String group_id, IDNDPager.SettingsPreference settingsPreference) {
         this.auto_swipe = auto_swipe;
         this.page_num = page_num;
         this.settingsPreference = settingsPreference;
         this.group_id = group_id;
+        this.row_num = row_num;
+        this.col_num = col_num;
     }
 
     public DNDPager getPager(){
@@ -106,7 +109,7 @@ public class FPage extends Fragment {
 
 
 
-        pager = new DNDPager(rl_grid,6,6,group_id,getContext());
+        pager = new DNDPager(rl_grid,row_num,col_num,group_id,getContext());
         pager.setPageNum(page_num);
         pager.setIsEditable(settingsPreference);
         if(event == null){
@@ -121,15 +124,15 @@ public class FPage extends Fragment {
                 }
             };
         }
+
         pager.setOnCustomize(event);
-        pager.updateLayoutSize(rl_grid, new IDNDPager() {
+        pager.render(new IDNDPager.ActionEvent() {
             @Override
-            public void onSizeChange(double width, double height) {
-                for(DNDItem item : item_list){
-                    pager.addButtonToLayout(item, page_num);
-                    if(post_action != null){
-                        post_action.onExecute();
-                    }
+            public void onExecute() {
+                Log.d(TAG, "onExecute: item size" + item_list.size());
+                pager.addButtonToLayout(item_list,page_num);
+                if(post_action != null){
+                    post_action.onExecute();
                 }
             }
         });

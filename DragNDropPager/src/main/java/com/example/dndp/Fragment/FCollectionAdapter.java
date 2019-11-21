@@ -24,17 +24,22 @@ public class FCollectionAdapter extends FragmentStatePagerAdapter {
     boolean is_editable = false;
     IDNDPager.ItemView event;
     String group_id = "";
-    public FCollectionAdapter(@NonNull FragmentManager fm, List<DNDItem> item_list, IDNDPager.AutoSwipe auto_swipe) {
+    int row_num, col_num;
+    public FCollectionAdapter(@NonNull FragmentManager fm, int row_num, int col_num, List<DNDItem> item_list, IDNDPager.AutoSwipe auto_swipe) {
         super(fm);
         this.auto_swipe = auto_swipe;
         this.item_list = item_list;
+        this.row_num = row_num;
+        this.col_num = col_num;
     }
 
-    public FCollectionAdapter(@NonNull FragmentManager fm, List<DNDItem> item_list, String group_id, IDNDPager.AutoSwipe auto_swipe) {
+    public FCollectionAdapter(@NonNull FragmentManager fm, int row_num, int col_num,  List<DNDItem> item_list, String group_id, IDNDPager.AutoSwipe auto_swipe) {
         super(fm);
         this.auto_swipe = auto_swipe;
         this.item_list = item_list;
         this.group_id = group_id;
+        this.row_num = row_num;
+        this.col_num = col_num;
     }
 
     public void setOnClickBtnListener(View.OnClickListener btn_listener){
@@ -45,7 +50,7 @@ public class FCollectionAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
 
-        final FPage fragment = new FPage(position, auto_swipe,group_id, new IDNDPager.SettingsPreference() {
+        final FPage fragment = new FPage(position, auto_swipe,row_num,col_num,group_id, new IDNDPager.SettingsPreference() {
             @Override
             public boolean isEditable() {
                 return is_editable;
