@@ -767,6 +767,7 @@ public class DNDPager {
     }
 
     public void addButtonToLayout(List<DNDItem> items, int page_num){
+        DNDUtils.sortItems(items);
         for(DNDItem item : items){
             addButtonToLayout(item,page_num);
         }

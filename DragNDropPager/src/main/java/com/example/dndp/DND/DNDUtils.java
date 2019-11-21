@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class DNDUtils {
@@ -88,4 +90,27 @@ public class DNDUtils {
 
         return imgIn;
     }
+
+
+    /**
+     * quick sort, short code
+     * @param list_item
+     */
+    public static void sortItems(List<DNDItem> list_item){
+        Collections.sort(list_item, new DNDItemComparator());
+    }
+
+    /**
+     * sort items by page number
+     */
+    public static class DNDItemComparator implements Comparator<DNDItem> {
+
+        @Override
+        public int compare(DNDItem t1, DNDItem t2) {
+            return t2.page_num - t1.page_num;
+        }
+    }
+
+
+
 }
