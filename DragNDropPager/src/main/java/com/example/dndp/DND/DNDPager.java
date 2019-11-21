@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -486,7 +485,6 @@ public class DNDPager {
             @Override
             public void onClick(View view) {
                 if(!settingsPreference.isEditable()){
-                    Toast.makeText(context,"hello",Toast.LENGTH_SHORT).show();
                     if(btn_listener != null){
                         btn_listener.onClick(view);
                     }
