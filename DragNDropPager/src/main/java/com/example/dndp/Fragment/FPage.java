@@ -38,9 +38,8 @@ public class FPage extends Fragment {
     private int page_num = -1;
     private IDNDPager.ActionEvent post_action;
     private IDNDPager.SettingsPreference settingsPreference;
-    private IDNDPager.ItemView event;
+    private IDNDPager.ItemView event = null;
     public FPage(int page_num, IDNDPager.AutoSwipe auto_swipe, IDNDPager.SettingsPreference settingsPreference) {
-        // Required empty public constructor
         this.auto_swipe = auto_swipe;
         this.page_num = page_num;
         this.settingsPreference = settingsPreference;
@@ -69,8 +68,6 @@ public class FPage extends Fragment {
         left_bound = view.findViewById(R.id.left_bound);
         right_bound = view.findViewById(R.id.right_bound);
 
-        String message = getArguments().getString("message");
-
         init();
 
         return view;
@@ -87,7 +84,6 @@ public class FPage extends Fragment {
                 if(DragEvent.ACTION_DRAG_ENTERED == dragEvent.getAction() && recent_swipe + swipe_buffer < new Date().getTime()){
                     recent_swipe =  new Date().getTime();
                     auto_swipe.onSwipeLeft();
-                    Log.d("buffer", "onDrag: swipe buffer");
                 }
 
                 return true;
@@ -113,21 +109,18 @@ public class FPage extends Fragment {
         pager.render();
         pager.setIsEditable(settingsPreference);
         if(event == null){
-            IDNDPager.ItemView event = new IDNDPager.ItemView() {
+            event = new IDNDPager.ItemView() {
                 @Override
                 public View onCustomize(DNDPager pager, View view) {
                     DNDButton btn = (DNDButton) view;
                     FCustomizePanel
                             .getInstance(btn)
-                            .show(getActivity().getSupportFragmentManager(),"ewqewq");
-
-                    Log.d("power", "onCustomize: " + pager.getInvalidColor());
+                            .show(getActivity().getSupportFragmentManager(),"customized");
                     return null;
                 }
             };
         }
         pager.setOnCustomize(event);
-        pager.setInvalidColor(Color.parseColor("#000fff"));
         pager.updateLayoutSize(rl_grid, new IDNDPager() {
             @Override
             public void onSizeChange(double width, double height) {

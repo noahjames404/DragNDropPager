@@ -39,23 +39,13 @@ public class DNDItem {
         }
     }
 
-    public DNDItem(String text, Drawable background_image, int background_color) {
+    public DNDItem(String text, Drawable background_image, int background_color, String tag) {
         this.cell_height_ratio = cell_height_ratio;
         this.cell_width_ratio = cell_width_ratio;
         this.text = text;
         this.background_image = background_image;
         this.background_color = background_color;
-    }
-
-    public DNDItem(String text,int cell_height_ratio, int cell_width_ratio, int x, int y,  Drawable background_image, int background_color, int page_num) {
-        this.cell_height_ratio = cell_height_ratio;
-        this.cell_width_ratio = cell_width_ratio;
-        this.x = x;
-        this.y = y;
-        this.text = text;
-        this.background_image = background_image;
-        this.background_color = background_color;
-        this.page_num = page_num;
+        this.tag = tag;
     }
 
     public DNDItem(String text,int cell_height_ratio, int cell_width_ratio, int x, int y,  Drawable background_image, int background_color, int page_num, String tag) {
