@@ -39,10 +39,12 @@ public class FPage extends Fragment {
     private IDNDPager.ActionEvent post_action;
     private IDNDPager.SettingsPreference settingsPreference;
     private IDNDPager.ItemView event = null;
-    public FPage(int page_num, IDNDPager.AutoSwipe auto_swipe, IDNDPager.SettingsPreference settingsPreference) {
+    private String group_id = "";
+    public FPage(int page_num, IDNDPager.AutoSwipe auto_swipe, String group_id, IDNDPager.SettingsPreference settingsPreference) {
         this.auto_swipe = auto_swipe;
         this.page_num = page_num;
         this.settingsPreference = settingsPreference;
+        this.group_id = group_id;
     }
 
     public DNDPager getPager(){
@@ -104,9 +106,8 @@ public class FPage extends Fragment {
 
 
 
-        pager = new DNDPager(rl_grid,6,6,"power",getContext());
+        pager = new DNDPager(rl_grid,6,6,group_id,getContext());
         pager.setPageNum(page_num);
-        pager.render();
         pager.setIsEditable(settingsPreference);
         if(event == null){
             event = new IDNDPager.ItemView() {
@@ -126,9 +127,9 @@ public class FPage extends Fragment {
             public void onSizeChange(double width, double height) {
                 for(DNDItem item : item_list){
                     pager.addButtonToLayout(item, page_num);
-                }
-                if(post_action != null){
-                    post_action.onExecute();
+                    if(post_action != null){
+                        post_action.onExecute();
+                    }
                 }
             }
         });
