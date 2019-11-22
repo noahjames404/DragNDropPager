@@ -143,6 +143,7 @@ public class DNDPager {
                 cell_height = getCellSize(row_num,height);
                 cell_width = getCellSize(col_num,width);
 
+                layout.removeAllViews();
                 generateSnapGrid();
             }
         });
@@ -157,6 +158,7 @@ public class DNDPager {
                 cell_height = getCellSize(row_num,height);
                 cell_width = getCellSize(col_num,width);
 
+                layout.removeAllViews();
                 generateSnapGrid();
                 post_render.onExecute();
             }

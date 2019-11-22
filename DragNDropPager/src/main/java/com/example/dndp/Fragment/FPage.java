@@ -19,6 +19,7 @@ import com.example.dndp.DND.IDNDPager;
 import com.example.dndp.FCustomizePanel;
 import com.example.dndp.R;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -28,7 +29,7 @@ import java.util.List;
 public class FPage extends Fragment {
 
     public static final String TAG = "FPAGE";
-    List<DNDItem> item_list;
+    List<DNDItem> item_list = new ArrayList<>();
     int swipe_buffer = 500;
     static long recent_swipe = new Date().getTime();
     RelativeLayout rl_grid;
@@ -50,6 +51,13 @@ public class FPage extends Fragment {
         this.col_num = col_num;
     }
 
+    /**
+     * empty constructor is required when switching orientation
+     */
+    public FPage(){
+
+    }
+
     public DNDPager getPager(){
         return pager;
     }
@@ -57,8 +65,6 @@ public class FPage extends Fragment {
     public void setCustomizeFragment(IDNDPager.ItemView event){
         this.event = event;
     }
-
-
 
     public void setItemList(List<DNDItem> item_list) {
         this.item_list = item_list;
@@ -126,10 +132,11 @@ public class FPage extends Fragment {
         }
 
         pager.setOnCustomize(event);
+
         pager.render(new IDNDPager.ActionEvent() {
             @Override
             public void onExecute() {
-                Log.d(TAG, "onExecute: item size" + item_list.size());
+
                 pager.addButtonToLayout(item_list,page_num);
                 if(post_action != null){
                     post_action.onExecute();
