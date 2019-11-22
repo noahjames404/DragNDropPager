@@ -3,6 +3,8 @@ package com.example.dndp.DND;
 import android.graphics.Bitmap;
 import android.os.Environment;
 
+import androidx.viewpager.widget.ViewPager;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -91,6 +93,25 @@ public class DNDUtils {
         return imgIn;
     }
 
+    /**
+     * generates an autoswipe callback for View Pagers
+     * @param view_pager
+     * @return
+     */
+    public static IDNDPager.AutoSwipe defaultAutoSwipe(final ViewPager view_pager){
+        return new IDNDPager.AutoSwipe() {
+            @Override
+            public void onSwipeLeft() {
+                view_pager.setCurrentItem(view_pager.getCurrentItem() - 1, true);
+            }
+
+            @Override
+            public void onSwipeRight() {
+                view_pager.setCurrentItem(view_pager.getCurrentItem() + 1, true);
+
+            }
+        };
+    }
 
     /**
      * quick sort, short code
