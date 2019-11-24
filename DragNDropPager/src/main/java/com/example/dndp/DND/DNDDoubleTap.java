@@ -5,7 +5,7 @@ import android.util.Log;
 import java.util.Date;
 
 /**
- * primarily used for onTouchListners
+ * primarily used for onTouchListners to detect double tap events
  */
 public class DNDDoubleTap {
     static final String TAG ="DNDDoubleTap";

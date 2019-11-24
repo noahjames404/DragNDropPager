@@ -19,6 +19,7 @@ import androidx.fragment.app.DialogFragment;
 import com.example.dndp.DND.DNDButton;
 import com.example.dndp.DND.DNDPager;
 import com.example.dndp.DND.DNDUtils;
+import com.example.dragndroppager.R;
 
 /**
  * Default fragment used to customize views inside the DNDPager.
@@ -119,6 +120,10 @@ public class FCustomizePanel extends DialogFragment {
 
     }
 
+    /**
+     * generates default color palettes
+     * @param view
+     */
     public void generateColorPalettes(View view){
         //get the spinner from the xml.
         spinner = view.findViewById(R.id.spinner_color_palette);
@@ -138,7 +143,11 @@ public class FCustomizePanel extends DialogFragment {
         spinner.setAdapter(adapter);
     }
 
-
+    /**
+     * converts hex value to color palettes base index
+     * @param color - hex to convert
+     * @return color palette index. returns -1 only if the hex does not exist in the existing palette
+     */
     private int getColorIndex(int color){
         String hex_color = "#" + Integer.toHexString(color).substring(2);
         for(int i = 0; i < DNDUtils.color_palette.length; i++){

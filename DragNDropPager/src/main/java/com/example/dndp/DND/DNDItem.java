@@ -3,6 +3,9 @@ package com.example.dndp.DND;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 
+/**
+ * the DNDItem class is only a template used for creating views inside a DNDPager.
+ */
 public class DNDItem {
 
     public int cell_height_ratio = 1,cell_width_ratio =1;

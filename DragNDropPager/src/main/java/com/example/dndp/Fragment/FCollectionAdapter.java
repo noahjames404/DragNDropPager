@@ -7,6 +7,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import com.example.dndp.DND.DNDItem;
@@ -14,7 +15,7 @@ import com.example.dndp.DND.IDNDPager;
 
 import java.util.List;
 
-public class FCollectionAdapter extends FragmentStatePagerAdapter {
+public class FCollectionAdapter extends FragmentPagerAdapter {
 
     public static String TAG ="FCollectionAdapter";
     IDNDPager.AutoSwipe auto_swipe;
@@ -25,6 +26,16 @@ public class FCollectionAdapter extends FragmentStatePagerAdapter {
     IDNDPager.ItemView event;
     String group_id = "";
     int row_num, col_num;
+
+
+    /**
+     *
+     * @param fm - use support fragment manager
+     * @param row_num - number of rows of each page
+     * @param col_num - number of columns of each page
+     * @param item_list - DNDItems list to be applied in the view_pager
+     * @param auto_swipe - callback method, use DNDUtils.defaultAutoSwipe().
+     */
     public FCollectionAdapter(@NonNull FragmentManager fm, int row_num, int col_num, List<DNDItem> item_list, IDNDPager.AutoSwipe auto_swipe) {
         super(fm);
         this.auto_swipe = auto_swipe;
@@ -33,6 +44,15 @@ public class FCollectionAdapter extends FragmentStatePagerAdapter {
         this.col_num = col_num;
     }
 
+    /**
+     *
+     * @param fm - use support fragment manager
+     * @param row_num - number of rows of each page
+     * @param col_num - number of columns of each page
+     * @param item_list - DNDItems list to be applied in the view_pager
+     * @param group_id - group id of each page
+     * @param auto_swipe - callback method, use DNDUtils.defaultAutoSwipe().
+     */
     public FCollectionAdapter(@NonNull FragmentManager fm, int row_num, int col_num,  List<DNDItem> item_list, String group_id, IDNDPager.AutoSwipe auto_swipe) {
         super(fm);
         this.auto_swipe = auto_swipe;
@@ -42,6 +62,10 @@ public class FCollectionAdapter extends FragmentStatePagerAdapter {
         this.col_num = col_num;
     }
 
+    /**
+     * assign a listener from each page.
+     * @param btn_listener
+     */
     public void setOnClickBtnListener(View.OnClickListener btn_listener){
         this.btn_listener = btn_listener;
     }
@@ -100,4 +124,10 @@ public class FCollectionAdapter extends FragmentStatePagerAdapter {
             }
         }
     }
+
+    @Override
+    public long getItemId(int position) {
+        return System.currentTimeMillis();
+    }
+
 }

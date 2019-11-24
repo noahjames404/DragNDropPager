@@ -10,9 +10,7 @@ import android.widget.Button;
 
 import androidx.annotation.RequiresApi;
 
-@SuppressLint("AppCompatCustomView")
-@RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-public class DNDButton extends Button implements IDNDPager.Item, IDNDPager.ItemEvent {
+public class DNDButton extends Button implements IDNDPager.Item {
     private int cell_width, cell_height;
 
     private String group_id;
@@ -128,15 +126,7 @@ public class DNDButton extends Button implements IDNDPager.Item, IDNDPager.ItemE
         return y;
     }
 
-    @Override
-    public void onDrag() {
 
-    }
-
-    @Override
-    public void onDrop() {
-
-    }
 
 
 

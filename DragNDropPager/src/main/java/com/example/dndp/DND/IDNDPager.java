@@ -2,6 +2,9 @@ package com.example.dndp.DND;
 
 import android.view.View;
 
+/**
+ * contains all callback interface used all over the library.
+ */
 public interface IDNDPager {
     void onSizeChange(double width, double height);
 
@@ -13,12 +16,6 @@ public interface IDNDPager {
         int getPositionX();
 
         int getPositionY();
-    }
-
-    interface ItemEvent {
-        void onDrag();
-
-        void onDrop();
     }
 
     interface Item extends Coordinates {
@@ -38,12 +35,6 @@ public interface IDNDPager {
 
         void setGroupId(String group_id);
 
-    }
-
-    interface CustomItem {
-        void setItem(Item i);
-
-        Item getItem();
     }
 
     interface ActionEvent {

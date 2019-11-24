@@ -17,7 +17,7 @@ import com.example.dndp.DND.DNDItem;
 import com.example.dndp.DND.DNDPager;
 import com.example.dndp.DND.IDNDPager;
 import com.example.dndp.FCustomizePanel;
-import com.example.dndp.R;
+import com.example.dragndroppager.R;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -86,9 +86,6 @@ public class FPage extends Fragment {
 
 
     private void init(){
-
-
-
         left_bound.setOnDragListener(new View.OnDragListener() {
             @Override
             public boolean onDrag(View view, DragEvent dragEvent) {
@@ -143,9 +140,6 @@ public class FPage extends Fragment {
                 }
             }
         });
-    }
-    public void addButtonToLayout(DNDItem item, int page_num){
-        pager.addButtonToLayout(item,page_num);
     }
 
     public void setPostAction(IDNDPager.ActionEvent post_action){

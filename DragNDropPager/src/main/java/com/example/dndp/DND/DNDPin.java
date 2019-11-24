@@ -4,6 +4,10 @@ import android.content.Context;
 import android.view.MotionEvent;
 import android.view.View;
 
+
+/**
+ * used for editing the size of buttons by dragging the pins, it is not applied yet.
+ */
 public class DNDPin extends View {
 
     public enum DRAG_DIRECTION{

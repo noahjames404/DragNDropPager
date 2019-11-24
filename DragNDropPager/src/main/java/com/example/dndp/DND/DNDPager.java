@@ -16,9 +16,10 @@ import android.widget.RelativeLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * the DNDPager is the core class of the library
+ */
 public class DNDPager {
-
-
     public static final String TAG ="DNDPager";
     Context context;
 

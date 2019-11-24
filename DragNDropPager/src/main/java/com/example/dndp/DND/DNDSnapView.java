@@ -4,6 +4,11 @@ import android.content.Context;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+/**
+ * DNDSnapView is a listener view used for drag and drop events,
+ * when draggable objects enters the view, it creates a shadow lock that guide users.
+ * It also inform users if the area to place the object is obstructed.
+ */
 public class DNDSnapView extends View implements IDNDPager.Coordinates {
 
     /**
