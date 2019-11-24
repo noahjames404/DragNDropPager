@@ -24,3 +24,4 @@ Drag button elements between fragments & cutomize it. This buttons are aligned i
 ## Demo
 [Get the demo here](https://github.com/noahjames404/DragNDropPagerDemo)
 
+> A much more detailed documentation is on the way
