@@ -48,7 +48,7 @@ public interface IDNDPager {
          * @param view - to be customize
          * @return
          */
-        View onCustomize(DNDPager pager, View view);
+        void onCustomize(DNDPager pager, View view);
     }
 
     interface AutoSwipe {

@@ -58,14 +58,26 @@ public class FPage extends Fragment {
 
     }
 
+    /**
+     * get the current pager of the Fragment
+     * @return
+     */
     public DNDPager getPager(){
         return pager;
     }
 
+    /**
+     * define the general customize fragment to all buttons inside the layout.
+     * @param event
+     */
     public void setCustomizeFragment(IDNDPager.ItemView event){
         this.event = event;
     }
 
+    /**
+     * set the group of DNDItems to be applied on DNDPager
+     * @param item_list
+     */
     public void setItemList(List<DNDItem> item_list) {
         this.item_list = item_list;
     }
@@ -115,26 +127,29 @@ public class FPage extends Fragment {
         pager = new DNDPager(rl_grid,row_num,col_num,group_id,getContext());
         pager.setPageNum(page_num);
         pager.setIsEditable(settingsPreference);
-        if(event == null){
-            event = new IDNDPager.ItemView() {
-                @Override
-                public View onCustomize(DNDPager pager, View view) {
+
+
+        pager.setOnCustomize(new IDNDPager.ItemView() {
+            @Override
+            public void onCustomize(DNDPager pager, View view) {
+                Log.d(TAG, "onCustomize: is nulll");
+                if(event == null){
+
                     DNDButton btn = (DNDButton) view;
                     FCustomizePanel
                             .getInstance(btn)
                             .show(getActivity().getSupportFragmentManager(),"customized");
-                    return null;
+                }else {
+                    event.onCustomize(pager,view);
                 }
-            };
-        }
-
-        pager.setOnCustomize(event);
+            }
+        });
 
         pager.render(new IDNDPager.ActionEvent() {
             @Override
             public void onExecute() {
 
-                pager.addButtonToLayout(item_list,page_num);
+                pager.addButtonToLayout(item_list);
                 if(post_action != null){
                     post_action.onExecute();
                 }

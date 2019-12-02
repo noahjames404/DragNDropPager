@@ -1,16 +1,7 @@
 package com.example.dndp.DND;
 
-import android.graphics.Bitmap;
-import android.os.Environment;
-
 import androidx.viewpager.widget.ViewPager;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -67,6 +58,12 @@ public class DNDUtils {
      */
     public static void sortItems(List<DNDItem> list_item){
         Collections.sort(list_item, new DNDItemComparator());
+    }
+
+    public static void validateProperties(List<DNDItem> list_item){
+        for(DNDItem item : list_item){
+            item.validateProperties();
+        }
     }
 
     /**

@@ -97,11 +97,20 @@ public class FCollectionAdapter extends FragmentPagerAdapter {
         return fragment;
     }
 
+    /**
+     * @param is_editable - if true users can drag & drop the buttons inside the view_pager,
+     *                      this also allow users to customize the button's properties
+     */
     public void setEditable(final boolean is_editable){
         this.is_editable = is_editable;
     }
 
 
+    /**
+     * By default a customize fragment is already implemented on runtime.
+     * To activate, the adapter must be set to editable and the selected button must be clicked two times.
+     * @param event - callback method on double clicked.
+     */
     public void setCustomizeFragment(IDNDPager.ItemView event){
         this.event = event;
     }
@@ -111,6 +120,10 @@ public class FCollectionAdapter extends FragmentPagerAdapter {
         return page_count;
     }
 
+    /**
+     * set the number of pages inside the view_pager.
+     * @param page_count
+     */
     public void setCount(int page_count){
         this.page_count= page_count;
         notifyDataSetChanged();
@@ -125,6 +138,11 @@ public class FCollectionAdapter extends FragmentPagerAdapter {
         }
     }
 
+    /**
+     * avoid fragments from not showing up when switching orientations.
+     * @param position
+     * @return
+     */
     @Override
     public long getItemId(int position) {
         return System.currentTimeMillis();

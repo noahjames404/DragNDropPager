@@ -95,6 +95,9 @@ public class DNDPager {
      */
     private IDNDPager.ItemView db_tap_event;
 
+    /**
+     * message response when updating the button's properties on setCustomize() callback method.
+     */
     public enum MESSAGE {
       OUT_OF_BOUNDS,
       OVERLAPPED,
@@ -121,6 +124,10 @@ public class DNDPager {
         instance = this;
     }
 
+    /**
+     * enable user to customize the properties of a button by setting the editable from true to false.
+     * setting the method isEditable as an interface can manipulate a group of DNDPager classes setting as one.
+     */
     private IDNDPager.SettingsPreference settingsPreference = new IDNDPager.SettingsPreference() {
         @Override
         public boolean isEditable() {
@@ -133,7 +140,7 @@ public class DNDPager {
      */
     private int page_num = -1;
     /**
-     * Changes are applied and start to load the views.
+     * must be called right after the constructor, renders the DNDSnapView.
      */
     public void render(){
         updateLayoutSize(layout, new IDNDPager() {
@@ -150,6 +157,10 @@ public class DNDPager {
         });
     }
 
+    /**
+     * alternative render must be called right after the constructor, renders the DNDSnapView.
+     * @param post_render - a callback is called after the view's are rendered.
+     */
     public void render(final IDNDPager.ActionEvent post_render){
         updateLayoutSize(layout, new IDNDPager() {
             @Override
@@ -167,16 +178,29 @@ public class DNDPager {
     }
 
     /**
-        populate the layout with snap views,
-        this are hidden from the user's vision.
+     * alternative render must be called right after the constructor, renders the DNDSnapView.
+     * @param list_item directly add a list of DNDItems on render.
      */
+    public void render(final List<DNDItem> list_item){
+        render(new IDNDPager.ActionEvent() {
+            @Override
+            public void onExecute() {
+                addButtonToLayout(list_item);
+            }
+        });
+    }
 
+
+    /**
+     * populates the entire layout with {@link DNDSnapView},
+     * the number varies on the number of rows & columns specified in a DNDPager.
+     * It is the base listener of {@link DNDButton}
+     */
     private void generateSnapGrid(){
 
         for(int y =0; y < row_num; y++)
             for (int x = 0; x < col_num; x++) {
                 DNDSnapView snap_view = new DNDSnapView(context);
-                snap_view.setLayout(layout);
                 final RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                         (int)cell_width,
                         (int)cell_height
@@ -304,12 +328,12 @@ public class DNDPager {
                                          */
 
                                         //view a
-                                        cell_point = setGridPosition(btn.getCellWidthRatio(),btn.getCellHeightRatio(),btn.getPositionX(),btn.getPositionY());
+                                        cell_point = setGridPosition(btn.getLastPager(),btn.getCellWidthRatio(),btn.getCellHeightRatio(),btn.getPositionX(),btn.getPositionY());
                                         current_cell.setLayoutParams(cell_point);
                                         current_cell.setPosition(btn);
 
                                         //view b
-                                        cell_point = setGridPosition(btn.getCellWidthRatio(),btn.getCellHeightRatio(),snap_view.getPositionX(),snap_view.getPositionY());
+                                        cell_point = setGridPosition(current_cell.getLastPager(),btn.getCellWidthRatio(),btn.getCellHeightRatio(),snap_view.getPositionX(),snap_view.getPositionY());
                                         btn.setLayoutParams(cell_point);
                                         btn.setPosition(snap_view);
 
@@ -414,6 +438,10 @@ public class DNDPager {
                 }
             }
         });
+    }
+
+    public void updateLayoutSize(final IDNDPager callback){
+        updateLayoutSize(layout,callback);
     }
 
 
@@ -532,6 +560,21 @@ public class DNDPager {
     public RelativeLayout.LayoutParams setGridPosition(double width_ratio,double height_ratio,int x, int y){
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int)(width_ratio * cell_width),(int)(height_ratio * cell_height));
         params.setMargins((int)(x * cell_width),(int)(y * cell_height),0,0);
+        return params;
+    }
+
+    /**
+     * calculates the cell designated position base on the cell ratio given followed by x & y coordinates
+     * @param pager - calculates the exact properties inside the layout, mostly used when migrating from one layout to another.
+     * @param width_ratio - cell_width
+     * @param height_ratio - cell_height
+     * @param x - position in layout
+     * @param y - position in layout
+     * @return LayoutParameters
+     */
+    public RelativeLayout.LayoutParams setGridPosition(DNDPager pager,double width_ratio,double height_ratio,int x, int y){
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int)(width_ratio * pager.cell_width),(int)(height_ratio * pager.cell_height));
+        params.setMargins((int)(x * pager.cell_width),(int)(y * pager.cell_height),0,0);
         return params;
     }
 
@@ -694,14 +737,27 @@ public class DNDPager {
         return null;
     }
 
+    /**
+     *
+     * @return an integer of color
+     */
     public int getInvalidColor() {
         return invalid_color;
     }
 
+    /**
+     * changes the shadow of draggable view when dragged in an obstructed place.
+     * @param invalid_color
+     */
     public void setInvalidColor(int invalid_color) {
         this.invalid_color = invalid_color;
     }
 
+    /**
+     * Manipulate the button's properties inside the DNDPager,
+     * a callback is called only if the DNDPager is set to editable & double clicked.
+     * @param view
+     */
     public void setOnCustomize(IDNDPager.ItemView view){
         db_tap_event = view;
     }
@@ -769,19 +825,23 @@ public class DNDPager {
         return pin;
     }
 
-    public void addButtonToLayout(List<DNDItem> items, int page_num){
+    /**
+     * Add a group of DNDItems to a layout
+     * @param items - list of DNDItems
+     */
+    public void addButtonToLayout(List<DNDItem> items){
         DNDUtils.sortItems(items);
         for(DNDItem item : items){
-            addButtonToLayout(item,page_num);
+            addButtonToLayout(item);
         }
     }
 
     /**
-     *
+     * add items to the DNDPager's layout.
      * @param item to be added.
      * @return true if item is added in layout else it does not have enough space.
      */
-    public boolean addButtonToLayout(DNDItem item,int page_num){
+    public boolean addButtonToLayout(DNDItem item){
 
         if(item.is_added){
             return true;
@@ -873,12 +933,27 @@ public class DNDPager {
     /**
      * update the items inside the layout
      * @param list_item
-     * @param page_num
      */
-    public void updateButtons(List<DNDItem> list_item,int page_num){
-        clearCache(list_item);
-        clearInteractiveViews();
-        addButtonToLayout(list_item,page_num);
+    public void updateButtons(final List<DNDItem> list_item){
+
+        if(layout_height == 0 && layout_width == 0){
+            updateLayoutSize(new IDNDPager() {
+                @Override
+                public void onSizeChange(double width, double height) {
+                    clearCache(list_item);
+                    clearInteractiveViews();
+                    addButtonToLayout(list_item);
+                }
+            });
+        }else {
+            clearCache(list_item);
+            clearInteractiveViews();
+            addButtonToLayout(list_item);
+        }
+
+
+
+
     }
 
 
@@ -892,7 +967,7 @@ public class DNDPager {
 
 
     /**
-     * set the page number, this must be unique if applied in a group_id
+     * set the page number, this must be unique if applied in a ViewPager or to a group of group_id
      * @return
      */
     public void setPageNum(int page_num) {
