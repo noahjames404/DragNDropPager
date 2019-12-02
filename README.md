@@ -21,7 +21,9 @@ Drag button elements between fragments & cutomize it. This buttons are aligned i
 + Supports ViewPager
 + View customization
 
+
 ## Demo
 [Get the demo here](https://github.com/noahjames404/DragNDropPagerDemo)
+[Detailed tutorial](http://radteam.tech/DragNDropPager/index.html)
 
 > A much more detailed documentation is on the way
