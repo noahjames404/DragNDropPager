@@ -1,8 +1,6 @@
 package com.example.dndp.DND;
 
-import android.util.Log;
-
-import java.util.Date;
+import android.view.View;
 
 /**
  * primarily used for onTouchListners to detect double tap events
@@ -10,49 +8,45 @@ import java.util.Date;
 public class DNDDoubleTap {
     static final String TAG ="DNDDoubleTap";
 
-    //variable for counting two successive up-down events
-    private int clickCount = 0;
-    //variable for storing the time of first click
-    private long startTime;
-    //variable for calculating the total time
-    private long duration;
-    //constant for defining the time duration between the click that can be considered as double-tap
-    static final int MAX_DURATION = 200;
+    private long last_touch_time = 0;
+    private long currentTouchTime = 0;
+    private int max_duration;
+    private View last_view;
+
 
     /**
-     * use for onDown events
+     * Ensure that the dblClick must occur only to that view,
+     * if the user manages to dblClick from one view to another and done before the max_duration limit
+     * then check if the recent view clicked is the same as the current view,
+     * the last view must be equal to current view clicked to callback.
+     * @param view - used to check if the last_view.
+     * @param event - callback when double clicked.
      */
-    void onTap(){
-        startTime =getTime();
-        clickCount++;
-        Log.d(TAG, "onTap: ");
-    }
+    void doubleTap(View view, IDNDPager.ActionEvent event){
+        last_touch_time = currentTouchTime;
+        currentTouchTime = System.currentTimeMillis();
 
-    /**
-     * use for onUp events
-     * @param event executes when user double taps
-     */
-    void onRelease(IDNDPager.ActionEvent event){
-
-        duration += getTime() - startTime;
-        if(clickCount >= 2)
-        {
-            if(duration<= MAX_DURATION)
-            {
+        if (currentTouchTime - last_touch_time < max_duration) {
+            if(last_view == view){
                 event.onExecute();
             }
-            Log.d(TAG, "onRelease: clearing " + clickCount);
-            clickCount = 0;
-            duration = 0;
-
+            last_touch_time = 0;
+            currentTouchTime = 0;
         }
+        last_view = view;
 
-        Log.d(TAG, "onRelease: " + clickCount);
-    }
-
-    private long getTime(){
-        return new Date().getTime();
     }
 
 
+    public int getMaxDuration() {
+        return max_duration;
+    }
+
+    /**
+     *
+     * @param max_duration - the max duration between clicks in milliseconds
+     */
+    public void setMaxDuration(int max_duration) {
+        this.max_duration = max_duration;
+    }
 }

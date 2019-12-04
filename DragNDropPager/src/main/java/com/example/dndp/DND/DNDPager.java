@@ -104,6 +104,9 @@ public class DNDPager {
       SAVED,
     }
 
+
+    private DNDDoubleTap db_tap;
+
     private static DNDPin pin_left, pin_top,pin_right,pin_bottom;
 
     /**
@@ -120,6 +123,9 @@ public class DNDPager {
         this.row_num = row_num;
         this.col_num = col_num;
         this.group_id = group_id;
+
+        db_tap = new DNDDoubleTap();
+        db_tap.setMaxDuration(250);
 
         instance = this;
     }
@@ -454,7 +460,6 @@ public class DNDPager {
      */
     public DNDButton generateButton(final int width_ratio, final int height_ratio, final int x, final int y, String btn_text, Drawable btnbg_image, int btnbg_color, String tag){
         final DNDButton btn = new DNDButton(context);
-        final DNDDoubleTap dbtap = new DNDDoubleTap();
 
         if(!tag.equals("")){
             btn.setTag(tag);
@@ -475,30 +480,9 @@ public class DNDPager {
                 if(me.getAction() == MotionEvent.ACTION_UP){
                     v.performClick();
                     Log.d(TAG, "onTouch: unclicked");
-                    dbtap.onRelease(new IDNDPager.ActionEvent() {
-                        @Override
-                        public void onExecute() {
-                            if(db_tap_event != null){
-                                db_tap_event.onCustomize(instance,v);
-//                                DNDButton btn = (DNDButton) v;
-//                                pin_top = generatePin(btn,"top");
-//                                pin_left = generatePin(btn,"left");
-//                                pin_right = generatePin(btn,"right");
-//                                pin_bottom = generatePin(btn,"bottom");
-//
-//                                btn.getLastPager().addView(pin_top);
-//                                btn.getLastPager().addView(pin_left);
-//                                btn.getLastPager().addView(pin_right);
-//                                btn.getLastPager().addView(pin_bottom);
-                            }else {
-                                Log.d(TAG, "onExecute: no active onCustomize listener");
-                            }
-                        }
-                    });
                 }
                 if(me.getAction() == MotionEvent.ACTION_DOWN){
                     Log.d(TAG, "onTouch: cliked");
-                    dbtap.onTap();
 
                 }
                 if (me.getAction() == MotionEvent.ACTION_MOVE  ){
@@ -514,11 +498,18 @@ public class DNDPager {
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(final View view) {
                 if(!settingsPreference.isEditable()){
                     if(btn_listener != null){
                         btn_listener.onClick(view);
                     }
+                }else {
+                    db_tap.doubleTap(view,new IDNDPager.ActionEvent() {
+                        @Override
+                        public void onExecute() {
+                            db_tap_event.onCustomize(instance,view);
+                        }
+                    });
                 }
             }
         });
