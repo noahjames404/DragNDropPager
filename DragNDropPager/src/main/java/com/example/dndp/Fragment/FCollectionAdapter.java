@@ -3,6 +3,7 @@ package com.example.dndp.Fragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -148,4 +149,14 @@ public class FCollectionAdapter extends FragmentPagerAdapter {
         return System.currentTimeMillis();
     }
 
+
+    /**
+     * updates the list of DNDItems and reset the page count to 1.
+     * Note: the ViewPager.setAdapter(your_adapter) must be called again to apply changes.
+     * @param item_list - new list of DNDItems
+     */
+    public void updateItemList(List<DNDItem> item_list){
+        this.page_count = 1;
+        this.item_list = item_list;
+    }
 }
