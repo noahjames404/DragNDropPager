@@ -73,7 +73,11 @@ public class DNDPager {
     /**
      * grant user to drag & drop views
      */
-    private boolean editable = false;
+    private boolean editable = false,
+    /**
+     * verify if the user is holding the button
+      */
+    is_holding = false;
 
     /**
      * set the default invalid color, this is used when a view overlaps another view.
@@ -394,6 +398,7 @@ public class DNDPager {
                                  */
                                 btn.getBackground().setAlpha(255);
                                 layout.removeView(drop_shadow_view);
+                                is_holding = false;
                                 break;
 
                         }
@@ -450,7 +455,6 @@ public class DNDPager {
         updateLayoutSize(layout,callback);
     }
 
-
     /**
      * Creates a DNDButton to be viewed in the layout.
      * @param width_ratio - the ratio is base on the layout_width
@@ -471,6 +475,11 @@ public class DNDPager {
                 if(!settingsPreference.isEditable()){
                     return false;
                 }
+
+                if(!is_holding){
+                    return false;
+                }
+
                 View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(btn);
                 /**
                  * updates the current view being drag.
@@ -479,6 +488,7 @@ public class DNDPager {
 
                 if(me.getAction() == MotionEvent.ACTION_UP){
                     v.performClick();
+
                     Log.d(TAG, "onTouch: unclicked");
                 }
                 if(me.getAction() == MotionEvent.ACTION_DOWN){
@@ -489,12 +499,19 @@ public class DNDPager {
                     v.startDrag(null,shadowBuilder,null,0);
                 }
 
+
                 return true;
             }
         });
 
 
-
+        btn.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                is_holding = true;
+                return true;
+            }
+        });
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
