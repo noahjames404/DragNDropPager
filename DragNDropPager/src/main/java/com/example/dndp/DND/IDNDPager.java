@@ -60,6 +60,10 @@ public interface IDNDPager {
         boolean isEditable();
     }
 
+    interface OnChangeLocationListener {
+        void onChange(View view);
+    }
+
 
 
 

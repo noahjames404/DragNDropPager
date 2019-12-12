@@ -99,6 +99,14 @@ public class DNDPager {
      */
     private IDNDPager.ItemView db_tap_event;
 
+    private IDNDPager.OnChangeLocationListener on_change_location = new IDNDPager.OnChangeLocationListener() {
+        @Override
+        public void onChange(View view) {
+            //do nothing
+            Log.d(TAG, "onChange: powerr " + view.getTag());
+        }
+    };
+
     /**
      * message response when updating the button's properties on setCustomize() callback method.
      */
@@ -367,6 +375,8 @@ public class DNDPager {
                                          */
                                         current_cell.getBackground().setAlpha(255);
                                         btn.getBackground().setAlpha(255);
+                                        on_change_location.onChange(btn);
+                                        on_change_location.onChange(current_cell);
                                     }
                                 }else {
                                     /**
@@ -375,20 +385,27 @@ public class DNDPager {
                                      */
                                     drop_shadow_view.setBackgroundColor(background_color);
                                     view.setBackgroundColor(background_color);
+
                                     cell_point = setGridPosition(btn.getCellWidthRatio(),btn.getCellHeightRatio(),snap_view.getPositionX(),snap_view.getPositionY());
                                     btn.setLayoutParams(cell_point);
-                                    btn.setPosition(snap_view);
+
                                     btn.getBackground().setAlpha(255);
 
                                     /**
                                      * when the unoccupied cell is located in foreign layout it is transfer to that layout.
                                      */
                                     if(btn.getLastPager().layout != layout){
+                                        btn.setPosition(snap_view);
                                         btn.getLastPager().layout.removeView(current_drag_view );
                                         btn.setLastPager(instance);
                                         layout.addView(btn);
+                                        on_change_location.onChange(btn);
 
+                                    }else if(!hasTheSamePoint(btn,snap_view)){
+                                        btn.setPosition(snap_view);
+                                        on_change_location.onChange(btn);
                                     }
+
                                 }
                                 break;
 
@@ -731,6 +748,19 @@ public class DNDPager {
     }
 
     /**
+     * check if both coordinates hold the same positions
+     * @param c1 - first coordinate to compare
+     * @param c2 - second coordinate to compare
+     * @return true if both coordinates has the same positions.
+     */
+    public boolean hasTheSamePoint(IDNDPager.Coordinates c1, IDNDPager.Coordinates c2){
+        if(c1.getPositionX() != c2.getPositionX() || c1.getPositionY() != c2.getPositionY()){
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * get button by coordinates inside the layout
      * @param x
      * @param y
@@ -980,5 +1010,13 @@ public class DNDPager {
      */
     public void setPageNum(int page_num) {
         this.page_num = page_num;
+    }
+
+    /**
+     * callback when draggable view's location is change or moved to another layout
+     * @param event
+     */
+    public void setOnChangeLocationListener(IDNDPager.OnChangeLocationListener event){
+        on_change_location = event;
     }
 }

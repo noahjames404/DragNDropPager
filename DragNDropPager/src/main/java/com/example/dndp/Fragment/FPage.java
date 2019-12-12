@@ -1,7 +1,6 @@
 package com.example.dndp.Fragment;
 
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.DragEvent;
@@ -42,6 +41,8 @@ public class FPage extends Fragment {
     private IDNDPager.ItemView event = null;
     private String group_id = "";
     private int row_num = -1, col_num = -1;
+    private IDNDPager.OnChangeLocationListener on_change_location;
+
     public FPage(int page_num, IDNDPager.AutoSwipe auto_swipe,int row_num, int col_num, String group_id, IDNDPager.SettingsPreference settingsPreference) {
         this.auto_swipe = auto_swipe;
         this.page_num = page_num;
@@ -127,6 +128,7 @@ public class FPage extends Fragment {
         pager = new DNDPager(rl_grid,row_num,col_num,group_id,getContext());
         pager.setPageNum(page_num);
         pager.setIsEditable(settingsPreference);
+        pager.setOnChangeLocationListener(on_change_location);
 
 
         pager.setOnCustomize(new IDNDPager.ItemView() {
@@ -157,6 +159,18 @@ public class FPage extends Fragment {
         });
     }
 
+    /**
+     * callback when draggable view's location is change or moved to another layout
+     * @param event
+     */
+    public void setOnChangeLocationListener(IDNDPager.OnChangeLocationListener event){
+        on_change_location = event;
+    }
+
+    /**
+     * execute after all views are rendered in DNDPager
+     * @param post_action
+     */
     public void setPostAction(IDNDPager.ActionEvent post_action){
         this.post_action = post_action;
     }

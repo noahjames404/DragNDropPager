@@ -29,6 +29,14 @@ public class FCollectionAdapter extends FragmentPagerAdapter {
     int row_num, col_num;
 
 
+    IDNDPager.OnChangeLocationListener on_change_location = new IDNDPager.OnChangeLocationListener() {
+        @Override
+        public void onChange(View view) {
+            //do nothing
+        }
+    };
+
+
     /**
      *
      * @param fm - use support fragment manager
@@ -87,6 +95,7 @@ public class FCollectionAdapter extends FragmentPagerAdapter {
         fragment.setArguments(bundle);
         fragment.setItemList(item_list);
         fragment.setCustomizeFragment(event);
+        fragment.setOnChangeLocationListener(on_change_location);
         fragment.setPostAction(new IDNDPager.ActionEvent() {
             @Override
             public void onExecute() {
@@ -158,5 +167,14 @@ public class FCollectionAdapter extends FragmentPagerAdapter {
     public void updateItemList(List<DNDItem> item_list){
         this.page_count = 1;
         this.item_list = item_list;
+    }
+
+
+    /**
+     * callback when draggable view's location is change or moved to another layout
+     * @param event
+     */
+    public void setOnChangeLocationListener(IDNDPager.OnChangeLocationListener event){
+        on_change_location = event;
     }
 }
