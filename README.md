@@ -17,9 +17,14 @@ Drag button elements between fragments & cutomize it. This buttons are aligned i
 
 ## Features
 
-+ Drag Views from one fragment to another
-+ Supports ViewPager
-+ View customization
++ Drag And Drop (tap and hold to drag)
++ Customize Buttons
++ Responsive Buttons
++ View Pager Support
++ Button Background Image & Color Support
++ Buttons are aligned on grid.
++ Buttons can also be drag and drop from one layout to another
++ Disable & Enable Drag N Drop Customization
 
 
 ## Demo
