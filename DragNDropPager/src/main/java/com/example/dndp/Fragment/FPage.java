@@ -28,20 +28,21 @@ import java.util.List;
 public class FPage extends Fragment {
 
     public static final String TAG = "FPAGE";
-    List<DNDItem> item_list = new ArrayList<>();
-    int swipe_buffer = 500;
-    static long recent_swipe = new Date().getTime();
-    RelativeLayout rl_grid;
-    IDNDPager.AutoSwipe auto_swipe;
-    View left_bound, right_bound;
-    DNDPager pager;
-    private int page_num = -1;
-    private IDNDPager.ActionEvent post_action;
-    private IDNDPager.SettingsPreference settingsPreference;
-    private IDNDPager.ItemView event = null;
-    private String group_id = "";
-    private int row_num = -1, col_num = -1;
-    private IDNDPager.OnChangeLocationListener on_change_location;
+    protected List<DNDItem> item_list = new ArrayList<>();
+    protected int swipe_buffer = 500;
+    protected static long recent_swipe = new Date().getTime();
+    protected RelativeLayout rl_grid;
+    protected IDNDPager.AutoSwipe auto_swipe;
+    protected View left_bound, right_bound;
+    protected DNDPager pager;
+    protected int page_num = -1;
+    protected IDNDPager.ActionEvent post_action;
+    protected IDNDPager.SettingsPreference settingsPreference;
+    protected IDNDPager.ItemView event = null;
+    protected String group_id = "";
+    protected int row_num = -1, col_num = -1;
+    protected IDNDPager.OnChangeLocationListener on_change_location;
+    protected IDNDPager.OnButtonPreInit button_pre_init;
 
     public FPage(int page_num, IDNDPager.AutoSwipe auto_swipe,int row_num, int col_num, String group_id, IDNDPager.SettingsPreference settingsPreference) {
         this.auto_swipe = auto_swipe;
@@ -57,6 +58,14 @@ public class FPage extends Fragment {
      */
     public FPage(){
 
+    }
+
+    /**
+     * modify the button before rendering to layout
+     * @param button_pre_init - called on generateButton() method
+     */
+    public void setOnButtonPreInit(IDNDPager.OnButtonPreInit button_pre_init){
+        this.button_pre_init = button_pre_init;
     }
 
     /**
@@ -129,6 +138,7 @@ public class FPage extends Fragment {
         pager.setPageNum(page_num);
         pager.setIsEditable(settingsPreference);
         pager.setOnChangeLocationListener(on_change_location);
+        pager.setOnButtonPreInit(button_pre_init);
 
 
         pager.setOnCustomize(new IDNDPager.ItemView() {

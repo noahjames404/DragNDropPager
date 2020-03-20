@@ -12,19 +12,19 @@ import android.widget.Button;
 import androidx.annotation.RequiresApi;
 
 public class DNDButton extends Button implements IDNDPager.Item {
-    private int cell_width, cell_height;
+    protected int cell_width, cell_height;
 
-    private String group_id;
+    protected String group_id;
 
-    private DNDPager pager;
+    protected DNDPager pager;
 
-    private GradientDrawable gradient_drawable;
+    protected GradientDrawable gradient_drawable;
 
-    private int color;
+    protected int color;
 
-    private int x,y;
+    protected int x,y;
 
-    private Drawable bg_image = null;
+    protected Drawable bg_image = null;
 
     public DNDButton(Context context) {
         super(context);
@@ -162,9 +162,9 @@ public class DNDButton extends Button implements IDNDPager.Item {
      * @param border
      * @param image
      */
-    public void setBackgroundImage(int border, Drawable image){
+    public void setBackgroundImage(int border, int border_color, Drawable image){
         GradientDrawable frame = gradient_drawable;
-        frame.setColor(0x000000ff);
+        frame.setStroke(border,border_color);
         Drawable[] layers = {image,frame};
         LayerDrawable result = new LayerDrawable(layers);
         bg_image = image;

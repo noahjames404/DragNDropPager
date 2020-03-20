@@ -19,17 +19,18 @@ import java.util.List;
 public class FCollectionAdapter extends FragmentPagerAdapter {
 
     public static String TAG ="FCollectionAdapter";
-    IDNDPager.AutoSwipe auto_swipe;
-    List<DNDItem> item_list;
-    int page_count = 1;
-    View.OnClickListener btn_listener;
-    boolean is_editable = false;
-    IDNDPager.ItemView event;
-    String group_id = "";
-    int row_num, col_num;
+    protected IDNDPager.AutoSwipe auto_swipe;
+    protected List<DNDItem> item_list;
+    protected int page_count = 1;
+    protected View.OnClickListener btn_listener;
+    protected boolean is_editable = false;
+    protected IDNDPager.ItemView event;
+    protected String group_id = "";
+    protected int row_num, col_num;
+    protected IDNDPager.OnButtonPreInit button_pre_init;
 
 
-    IDNDPager.OnChangeLocationListener on_change_location = new IDNDPager.OnChangeLocationListener() {
+    protected IDNDPager.OnChangeLocationListener on_change_location = new IDNDPager.OnChangeLocationListener() {
         @Override
         public void onChange(View view) {
             //do nothing
@@ -96,6 +97,7 @@ public class FCollectionAdapter extends FragmentPagerAdapter {
         fragment.setItemList(item_list);
         fragment.setCustomizeFragment(event);
         fragment.setOnChangeLocationListener(on_change_location);
+        fragment.setOnButtonPreInit(button_pre_init);
         fragment.setPostAction(new IDNDPager.ActionEvent() {
             @Override
             public void onExecute() {
@@ -105,6 +107,15 @@ public class FCollectionAdapter extends FragmentPagerAdapter {
         });
 
         return fragment;
+    }
+
+    /**
+     * modify the button before rendering to layout
+     * note: avoid directly modifying the size & background of button thru here.
+     * @param button_pre_init - called on generateButton() method
+     */
+    public void setOnButtonPreInit(IDNDPager.OnButtonPreInit button_pre_init){
+        this.button_pre_init = button_pre_init;
     }
 
     /**
@@ -147,6 +158,8 @@ public class FCollectionAdapter extends FragmentPagerAdapter {
             }
         }
     }
+
+
 
     /**
      * avoid fragments from not showing up when switching orientations.

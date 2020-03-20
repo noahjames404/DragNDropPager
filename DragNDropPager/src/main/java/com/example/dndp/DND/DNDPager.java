@@ -23,57 +23,57 @@ public class DNDPager {
     public static final String TAG ="DNDPager";
     Context context;
 
-    private View.OnClickListener btn_listener;
+    protected View.OnClickListener btn_listener;
     /**
      * The number of rows & columns from each page to support.
      * When using multiple DNDPager with the same group id, ensure that
      * row_num & col_num values are the same from each class.
      */
-    private int row_num, col_num;
+    protected int row_num, col_num;
     /**
      * The size of the layout, this is updated using updateLayoutSize(layout,IDNDPager)
      * */
-    private double layout_width, layout_height;
+    protected double layout_width, layout_height;
     /**
      * This variables depends on row num & col num & layout size.
      */
-    private double cell_width, cell_height;
+    protected double cell_width, cell_height;
 
     /**
      * The layout to be populated.
      * */
-    private RelativeLayout layout;
+    protected RelativeLayout layout;
 
     /**
      * The current_drag_view is the current view being drag, this can also be pass from
      * one layout to another, the same principle applies with drop_shadow_view;
      */
-    private static View current_drag_view,drop_shadow_view;
+    protected static View current_drag_view,drop_shadow_view;
 
     /**
        draggable views are only allowed to migrate to another layout
        if it has the same group_id
      */
-    private String group_id;
+    protected String group_id;
 
     /**
      * The margin in width & height of a button, use for checking the sizes in buttons.
      * a percentage is ignored when an element overlaps another element.
      */
-    private double margin_percentage = 0.00;
+    protected double margin_percentage = 0.00;
 
     /**
      * tables to be added after layout load
      */
-    private List<DNDItem> list_item = new ArrayList<>();
+    protected List<DNDItem> list_item = new ArrayList<>();
     /**
      * background color of the layout, since the layout's background color would be override by the grid snap view.
      */
-    private int background_color = Color.WHITE;
+    protected int background_color = Color.WHITE;
     /**
      * grant user to drag & drop views
      */
-    private boolean editable = false,
+    protected boolean editable = false,
     /**
      * verify if the user is holding the button
       */
@@ -82,30 +82,34 @@ public class DNDPager {
     /**
      * set the default invalid color, this is used when a view overlaps another view.
      */
-    private int invalid_color = Color.parseColor("#e74c3c");
+    protected int invalid_color = Color.parseColor("#e74c3c");
 
     /**
      * the default height & width of pins
      */
-    private int pin_height =70, pin_width =70;
+    protected int pin_height =70, pin_width =70;
 
     /**
      * the distance of the pin from the view, 0 starts at edge
      */
-    private int pin_distance = 70;
+    protected int pin_distance = 70;
 
     /**
      * action response when button is double tap (only applies when editable set to true)
      */
-    private IDNDPager.ItemView db_tap_event;
+    protected IDNDPager.ItemView db_tap_event;
 
-    private IDNDPager.OnChangeLocationListener on_change_location = new IDNDPager.OnChangeLocationListener() {
+    protected IDNDPager.OnChangeLocationListener on_change_location = new IDNDPager.OnChangeLocationListener() {
         @Override
         public void onChange(View view) {
             //do nothing
-            Log.d(TAG, "onChange: powerr " + view.getTag());
         }
     };
+
+    /**
+     * additional modification on buttons before rendering to layout
+     */
+    protected IDNDPager.OnButtonPreInit button_pre_init;
 
     /**
      * message response when updating the button's properties on setCustomize() callback method.
@@ -117,14 +121,14 @@ public class DNDPager {
     }
 
 
-    private DNDDoubleTap db_tap;
+    protected DNDDoubleTap db_tap;
 
-    private static DNDPin pin_left, pin_top,pin_right,pin_bottom;
+    protected static DNDPin pin_left, pin_top,pin_right,pin_bottom;
 
     /**
      * used for events
      */
-    private DNDPager instance;
+    protected DNDPager instance;
 
     /**
         @param layout items are populated in this layout.
@@ -146,7 +150,7 @@ public class DNDPager {
      * enable user to customize the properties of a button by setting the editable from true to false.
      * setting the method isEditable as an interface can manipulate a group of DNDPager classes setting as one.
      */
-    private IDNDPager.SettingsPreference settingsPreference = new IDNDPager.SettingsPreference() {
+    protected IDNDPager.SettingsPreference settingsPreference = new IDNDPager.SettingsPreference() {
         @Override
         public boolean isEditable() {
             return false;
@@ -156,7 +160,7 @@ public class DNDPager {
     /**
      * page number, -1 is not assigned.
      */
-    private int page_num = -1;
+    protected int page_num = -1;
     /**
      * must be called right after the constructor, renders the DNDSnapView.
      */
@@ -199,7 +203,7 @@ public class DNDPager {
      * alternative render must be called right after the constructor, renders the DNDSnapView.
      * @param list_item directly add a list of DNDItems on render.
      */
-    public void render(final List<DNDItem> list_item){
+    protected void render(final List<DNDItem> list_item){
         render(new IDNDPager.ActionEvent() {
             @Override
             public void onExecute() {
@@ -214,7 +218,7 @@ public class DNDPager {
      * the number varies on the number of rows & columns specified in a DNDPager.
      * It is the base listener of {@link DNDButton}
      */
-    private void generateSnapGrid(){
+    protected void generateSnapGrid(){
 
         for(int y =0; y < row_num; y++)
             for (int x = 0; x < col_num; x++) {
@@ -438,6 +442,14 @@ public class DNDPager {
     }
 
     /**
+     * modify the button before rendering to layout
+     * @param button_pre_init - called on generateButton() method
+     */
+    public void setOnButtonPreInit(IDNDPager.OnButtonPreInit button_pre_init){
+        this.button_pre_init = button_pre_init;
+    }
+
+    /**
         Listens to layout size change.
         This method also avoid receiving 0 width & height on initial load of the layout.
         @param layout - safely takes the layout size.
@@ -481,7 +493,9 @@ public class DNDPager {
      */
     public DNDButton generateButton(final int width_ratio, final int height_ratio, final int x, final int y, String btn_text, Drawable btnbg_image, int btnbg_color, String tag){
         final DNDButton btn = new DNDButton(context);
-
+        if(button_pre_init != null){
+            button_pre_init.onInitialize(btn);
+        }
         if(!tag.equals("")){
             btn.setTag(tag);
         }
@@ -551,13 +565,14 @@ public class DNDPager {
 
         btn.setText(btn_text);
         if(btnbg_image != null){
-            btn.setBackgroundImage(5, btnbg_image);
+            btn.setBackgroundImage(5,background_color, btnbg_image);
         }else {
             btn.setBackgroundColor(btnbg_color);
+            btn.setBorder(5,background_color);
         }
         btn.setGroupId(group_id);
         btn.setLastPager(instance);
-        btn.setBorder(5,background_color);
+
         btn.setCellWidthRatio(width_ratio);
         btn.setCellHeightRatio(height_ratio);
         btn.setPosition(x,y);

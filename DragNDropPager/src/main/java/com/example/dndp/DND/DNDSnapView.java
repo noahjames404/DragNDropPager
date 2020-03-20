@@ -14,11 +14,11 @@ public class DNDSnapView extends View implements IDNDPager.Coordinates {
     /**
      * The position of view element inside the relative view.
      * */
-    private int x =0,y =0;
+    protected int x =0,y =0;
     /**
      * the current layout it resides in.
      */
-    private RelativeLayout layout;
+    protected RelativeLayout layout;
 
     public DNDSnapView(Context context) {
         super(context);

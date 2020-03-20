@@ -64,6 +64,10 @@ public interface IDNDPager {
         void onChange(View view);
     }
 
+    interface OnButtonPreInit {
+        void onInitialize(DNDButton btn);
+    }
+
 
 
 
